@@ -3,6 +3,9 @@
 
 
 #define STARTFEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define TESTFEN1 "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1"
+#define TESTFEN2 "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
+#define TESTFEN4 "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
 
 enum Color
 {
@@ -21,11 +24,14 @@ enum Files
 	FILEA, FILEB, FILEC, FILED, FILEE, FILEF, FILEG, FILEH
 };
 #define NFILES 8
+#define NFILESEXT 10
 
 enum Ranks
 {
 	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8
 };
 #define NRANKS 8
+#define NRANKSEXT 12
+#define OFFBRD 0
 
 #endif

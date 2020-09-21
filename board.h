@@ -8,11 +8,12 @@ using std::cout;
 using std::endl;
 using std::string;
 
+
 class Board
 {
 
 private:
-	static short ExtBrd[120]; 
+	static short ExtBrd[NRANKSEXT][NFILESEXT]; 
 	
 	//standard 8x8 board
 	short Brd[NRANKS][NFILES] = {0};
@@ -35,6 +36,9 @@ private:
 public:
 	void setBoardFromFEN(string fen);
 	void printBoard();
+	void initExtBrd();
 };
+
+
 
 #endif

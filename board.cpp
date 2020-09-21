@@ -3,12 +3,14 @@
 
 #include "board.h"
 
+short Board::ExtBrd[NRANKSEXT][NFILESEXT];
+
 void Board::printBoard()
 {
 	cout << "Printing Chess Board..." << endl << endl;
 	cout <<"\t";
 
-	for(int f=FILEA; f<=FILEH; f++)
+	for(int f = FILEA; f <= FILEH; f++)
 	{
 		char name = 'A' + f;
 		cout << "FILE " << name <<"\t";
@@ -16,11 +18,11 @@ void Board::printBoard()
 
 	cout << endl << endl;
 
-	for(int r=RANK8; r>=RANK1; r--)
+	for(int r = RANK8; r >= RANK1; r--)
 	{
 		cout << "RANK " << r+1 <<"\t";
 		
-		for(int f=FILEA; f<=FILEH; f++)
+		for(int f = FILEA; f <= FILEH; f++)
 		{
 			cout << val2char[Brd[r][f]] << "\t";
 		}
@@ -32,6 +34,10 @@ void Board::printBoard()
 		cout<< "Side to play: WHITE"  << endl;
 	if (ActiveColor == BLACK)
 		cout<< "Side to play: BLACK" << endl;
+
+	cout << "Total Moves:" << NMoves << endl;
+	cout << "Half Moves:"  << HalfMoves << endl;
+	cout << "En Passant Square:" << EnP << endl;
 
 }
 
@@ -46,7 +52,7 @@ void Board::setBoardFromFEN(string fen)
 	// Different parts of the FEN format
 	int section = 0;
 
-	for (auto c=fen.begin(); c!=fen.end(); c++)
+	for (auto c = fen.begin(); c != fen.end(); c++)
 	{
 		if(*c == ' ')
 		{
@@ -191,5 +197,24 @@ void Board::setBoardFromFEN(string fen)
 			cout << "ERROR" << endl;
 
 	}//end for loop over fen string
+	#ifdef DEBUG
+		printBoard();
+	#endif
+}
 
+void Board::initExtBrd()
+{
+	for (auto r = 0; r <= NRANKSEXT; r++)
+		for(auto f = 0; f <= NFILESEXT; f++)
+		{
+			if (r <= 1 || r >= NRANKSEXT-2 ||
+			    f == 0 || f == NFILESEXT-1 )
+			    Board::ExtBrd[r][f] = OFFBRD;
+
+			else
+			{
+				Board::ExtBrd[r][f] = NRANKSEXT*r + f;
+			}
+
+		}
 }
