@@ -37,6 +37,10 @@ public:
 	void setBoardFromFEN(string fen);
 	void printBoard();
 	void initExtBrd();
+
+	//Test functions
+	void setBoardFromFEN_test();
+	void initExtBrd_test();
 };
 
 

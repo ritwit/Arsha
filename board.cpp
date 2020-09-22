@@ -172,15 +172,18 @@ void Board::setBoardFromFEN(string fen)
 		else if (section == 3)
 		{
 			if( *c == '-')
+			{
+				EnP = 0;
 				continue;
+			}
 			
-			if (enp_file)
+			if (!enp_file)
 			{
 				enp_file = *c;
 				continue;
 			}
 
-			int enp_file_no = *c - 'a';
+			int enp_file_no = enp_file - 'a';
 			int enp_rank_no = *c - '1';
 
 			EnP = 10*enp_rank_no + enp_file_no;
@@ -197,13 +200,15 @@ void Board::setBoardFromFEN(string fen)
 			cout << "ERROR" << endl;
 
 	}//end for loop over fen string
-	#ifdef DEBUG
-		printBoard();
-	#endif
+	//#ifdef DEBUG
+	//	printBoard();
+	//#endif
 }
 
 void Board::initExtBrd()
 {
+	short counter;
+
 	for (auto r = 0; r <= NRANKSEXT; r++)
 		for(auto f = 0; f <= NFILESEXT; f++)
 		{
@@ -213,8 +218,41 @@ void Board::initExtBrd()
 
 			else
 			{
-				Board::ExtBrd[r][f] = NRANKSEXT*r + f;
+				Board::ExtBrd[r][f] = counter;
+				counter++;
 			}
 
 		}
+}
+
+
+void Board::setBoardFromFEN_test()
+{
+	cout << "Starting FEN: "<< STARTFEN << endl;
+	setBoardFromFEN(STARTFEN);
+	printBoard();
+	cout << "After WHITE move: " << TESTFEN1 << endl;
+	setBoardFromFEN(TESTFEN1);
+	printBoard();
+	cout << "After BLACK move: " << TESTFEN2 << endl;
+	setBoardFromFEN(TESTFEN2);
+	printBoard();
+	cout << "After WHITE move: " << TESTFEN3 << endl;
+	setBoardFromFEN(TESTFEN3);
+	printBoard(); 
+}
+
+void Board::initExtBrd_test()
+{
+	cout << "Printing Extended Board" << endl;
+
+	for (auto r = NRANKSEXT-1; r >= 0; r--)
+	{	
+		for(auto f = 0; f <= NFILESEXT-1; f++)
+		{
+			cout << ExtBrd[r][f] << "\t";
+		}
+		
+		cout << endl;
+	}
 }

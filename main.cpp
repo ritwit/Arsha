@@ -14,8 +14,8 @@ int main(int argc, char const *argv[])
 {
 	cout << "Hello! I'm Arsha" << endl;
 	Board board;
-	board.setBoardFromFEN(TESTFEN2);
-	//board.printBoard();
-	
+	//board.setBoardFromFEN_test();
+	board.initExtBrd();
+	board.initExtBrd_test();
 	cout << "Exiting"<< endl;
 }
