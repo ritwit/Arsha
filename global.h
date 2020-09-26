@@ -7,17 +7,53 @@
 #define TESTFEN2 "rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2"
 #define TESTFEN3 "rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2"
 
-enum Color
+enum Color : bool
 {
 	BLACK, WHITE
 };
 
 enum Pieces
 {
-	NO_PIECE, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK
+	NO_PIECE, bP, bN, bB, bR, bQ, bK, wP, wN, wB, wR, wQ, wK
 };
+#define NPIECES 13
 
-const char val2char[] = {'-' , 'P', 'N', 'B', 'R', 'Q', 'K', 'p', 'n', 'b', 'r', 'q', 'k'};
+const bool PieceSide[13] = { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
+                             WHITE, WHITE, WHITE, WHITE, WHITE, WHITE
+                           };
+
+#define MAXDIR 8
+const short AttackDir[NPIECES][MAXDIR][2] =
+{
+	{{0}                                   }, //NO_PIECE
+	{{-1, -1}, {-1, +1}                    }, //bP
+	{{-2, -1}, {-2, +1}, {+2, -1}, {+2, +1},
+     {-1, -2}, {-1, +2}, {+1, -2}, {+1, +2}}, //bN
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1}}, //bB
+    {{-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //bR
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1},
+     {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //bQ
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1},
+     {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //bK
+    {{+1, -1}, {+1, +1}                    }, //wP
+    {{-2, -1}, {-2, +1}, {+2, -1}, {+2, +1},
+     {-1, -2}, {-1, +2}, {+1, -2}, {+1, +2}}, //wN
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1}}, //wB
+    {{-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wR
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1},
+     {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wQ
+    {{-1, -1}, {-1, +1}, {+1, -1}, {+1, +1},
+     {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wK
+
+};
+const short NAttackdir[13] = 
+{0, 2, 8, 4, 4, 8, 8, 2, 8, 4, 4, 8, 8};
+
+// Bishops, Rooks and Queen have ranged attack
+const bool Ranged[13] = {false, false, false,  true,  true, true, false,
+                   false, false,  true,  true,  true, false};
+
+const char val2char[] = {'-' , 'p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R', 'Q', 'K'};
 
 enum Files
 {

@@ -164,8 +164,10 @@ void Board::setBoardFromFEN(string fen)
 				case 'q':
 					Castle[3] = 1;
 					break;
+				case '-':
+					break;
 				default:
-					cout << "ERROR" << endl;
+					cout << "ERROR: invalid castle" << endl;
 			}
 		}
 
@@ -254,5 +256,179 @@ void Board::initExtBrd_test()
 		}
 		
 		cout << endl;
+	}
+}
+
+bool Board::getSquare(int &r, int &f , const int dir)
+{
+	int ExtBrdval = (r+2)*NFILESEXT + (f+1);
+	int ToSquare = ExtBrdval + dir;
+
+	// Check if on board
+	int Extr = ToSquare / 10;
+	int Extf = ToSquare % 10;
+
+	if (Extr < 2 || Extr > 9 || Extf == 0 || Extf == 9)
+		return false; 
+
+	else 
+	{
+		r = Extr - 2;
+		f = Extf - 1;
+	}
+
+	return true;
+}
+
+// side has the color which attcks the square
+bool Board::isSquareAttacked(const int r, const int f, const Color side)
+{
+	for(int p = bP; p <= wK; p=p+1)
+	{
+		// Skip pieces of defender color
+		if(PieceSide[p] != side)
+			continue;
+
+		#ifdef DEBUG
+		if (r == RANK6 && f == FILEB)
+		cout << "Checking attacks by 	" << val2char[p] << endl;
+		#endif
+   		
+   		// If the piece is not ranged
+		if(!Ranged[p])
+		{
+			for (int dir_idx = 0; dir_idx < NAttackdir[p]; dir_idx++)
+			{
+				int rp = r - AttackDir[p][dir_idx][0];
+				int fp = f - AttackDir[p][dir_idx][1];
+
+				if (isOffBoard(rp, fp))
+					continue;
+
+				if (isPieceOccupiedSquare(rp, fp, p))
+				{
+					return true;
+				}
+			}
+
+		}
+
+		// If it's a ranged unit
+		
+		else
+		{
+			for (int dir_idx = 0; dir_idx < NAttackdir[p]; dir_idx++)
+			{
+				int rp = r;
+				int fp = f;
+				int range = 1;
+
+				#ifdef DEBUG
+				//if (r == RANK6 && f == FILEB)
+				//	cout << r << f << endl;
+				#endif
+
+				while(!isOffBoard(rp, fp))
+				{
+					rp = r - AttackDir[p][dir_idx][0]*range;
+					fp = f - AttackDir[p][dir_idx][1]*range;
+					range++;
+					
+					#ifdef DEBUG
+					//if (r == RANK6 && f == FILEB)
+					cout << rp<< fp <<" " << range<< " "<< AttackDir[p][dir_idx][0] << " " << AttackDir[p][dir_idx][1] << endl;
+					#endif
+
+					if (isOffBoard(rp, fp))
+						break;
+
+					if (isPieceOccupiedSquare(rp, fp, p))
+						return true;
+
+					if (isOccupiedSquare(rp, fp))
+						break;
+
+				}
+			}
+		} 
+		
+	}
+
+	return false;
+}
+
+bool Board::isPieceOccupiedSquare(const int r, const int f, const int p)
+{
+	if (Brd[r][f] == p)
+		return true;
+	return false;
+}
+
+bool Board::isOccupiedSquare(const int r, const int f)
+{
+	if (Brd[r][f])
+		return true;
+	return false;
+}
+
+bool Board::isOffBoard(const int r, const int f)
+{
+	if (r < 0 || r > 7 || f  < 0 || f > 7)
+		return true;
+	return false; 
+}
+
+void Board::isSquareAttacked_test()
+{
+	string testFEN[] =
+	{
+		"8/1N6/8/8/4n3/8/8/8 w - - 0 1 ",		
+		"8/3p4/4pp2/8/8/2PP4/4PP2/8 w - - 0 1 ",
+		"8/2K5/8/8/8/5k2/8/8 w - - 0 1 ",
+		"8/2B2B2/8/8/3P2P1/4b3/4b3/8 w - - 0 1 ",
+		"8/1R6/1R6/8/1P6/5r2/8/8 w - - 0 1 ",
+		"8/2Q5/3P4/8/8/8/5q2/8 w - - 0 1 "
+
+	};
+	int num_test = 6;
+
+	for(int test = 0; test < num_test; test++)
+	{
+		setBoardFromFEN(testFEN[test]);
+		printBoard();
+
+		cout << "WHITE attacks:" << endl;
+		for(int r = RANK8; r >= RANK1; r--)
+		{
+			cout << "RANK " << r+1 << "\t";
+			
+			for(int f = FILEA; f <= FILEH; f++)
+			{
+				if (isSquareAttacked(r, f, WHITE) && !isOccupiedSquare(r, f))
+					cout << "x" << "\t";
+				else
+					cout << "_" << "\t";
+			}
+			
+			cout << endl << endl;
+		}
+
+		cout << "BLACK attacks:" << endl;
+		for(int r = RANK8; r >= RANK1; r--)
+		{
+			cout << "RANK " << r+1 << "\t";
+			
+			for(int f = FILEA; f <= FILEH; f++)
+			{
+				if (isSquareAttacked(r, f, BLACK) && !isOccupiedSquare(r, f))
+					cout << "x" << "\t";
+				else
+					cout << "_" << "\t";
+			}
+			
+			cout << endl << endl;
+		}
+
+
 	}
 }
