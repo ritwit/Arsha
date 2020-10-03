@@ -3,7 +3,9 @@
 
 #include "board.h"
 
-short Board::ExtBrd[NRANKSEXT][NFILESEXT];
+using std::cout;
+using std::endl;
+using std::string;
 
 void Board::printBoard()
 {
@@ -207,27 +209,6 @@ void Board::setBoardFromFEN(string fen)
 	//#endif
 }
 
-void Board::initExtBrd()
-{
-	short counter;
-
-	for (auto r = 0; r <= NRANKSEXT; r++)
-		for(auto f = 0; f <= NFILESEXT; f++)
-		{
-			if (r <= 1 || r >= NRANKSEXT-2 ||
-			    f == 0 || f == NFILESEXT-1 )
-			    Board::ExtBrd[r][f] = OFFBRD;
-
-			else
-			{
-				Board::ExtBrd[r][f] = counter;
-				counter++;
-			}
-
-		}
-}
-
-
 void Board::setBoardFromFEN_test()
 {
 	cout << "Starting FEN: "<< STARTFEN << endl;
@@ -244,41 +225,6 @@ void Board::setBoardFromFEN_test()
 	printBoard(); 
 }
 
-void Board::initExtBrd_test()
-{
-	cout << "Printing Extended Board" << endl;
-
-	for (auto r = NRANKSEXT-1; r >= 0; r--)
-	{	
-		for(auto f = 0; f <= NFILESEXT-1; f++)
-		{
-			cout << ExtBrd[r][f] << "\t";
-		}
-		
-		cout << endl;
-	}
-}
-
-bool Board::getSquare(int &r, int &f , const int dir)
-{
-	int ExtBrdval = (r+2)*NFILESEXT + (f+1);
-	int ToSquare = ExtBrdval + dir;
-
-	// Check if on board
-	int Extr = ToSquare / 10;
-	int Extf = ToSquare % 10;
-
-	if (Extr < 2 || Extr > 9 || Extf == 0 || Extf == 9)
-		return false; 
-
-	else 
-	{
-		r = Extr - 2;
-		f = Extf - 1;
-	}
-
-	return true;
-}
 
 // side has the color which attcks the square
 bool Board::isSquareAttacked(const int r, const int f, const Color side)
@@ -314,7 +260,6 @@ bool Board::isSquareAttacked(const int r, const int f, const Color side)
 		}
 
 		// If it's a ranged unit
-		
 		else
 		{
 			for (int dir_idx = 0; dir_idx < NAttackdir[p]; dir_idx++)
@@ -380,7 +325,7 @@ bool Board::isOffBoard(const int r, const int f)
 
 void Board::isSquareAttacked_test()
 {
-	string testFEN[] =
+	const string testFEN[] =
 	{
 		"8/1N6/8/8/4n3/8/8/8 w - - 0 1 ",		
 		"8/3p4/4pp2/8/8/2PP4/4PP2/8 w - - 0 1 ",
@@ -390,7 +335,7 @@ void Board::isSquareAttacked_test()
 		"8/2Q5/3P4/8/8/8/5q2/8 w - - 0 1 "
 
 	};
-	int num_test = 6;
+	const int num_test = 6;
 
 	for(int test = 0; test < num_test; test++)
 	{
