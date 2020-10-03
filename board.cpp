@@ -203,10 +203,7 @@ void Board::setBoardFromFEN(string fen)
 		else
 			cout << "ERROR" << endl;
 
-	}//end for loop over fen string
-	//#ifdef DEBUG
-	//	printBoard();
-	//#endif
+	}
 }
 
 void Board::setBoardFromFEN_test()
@@ -227,101 +224,64 @@ void Board::setBoardFromFEN_test()
 
 
 // side has the color which attcks the square
-bool Board::isSquareAttacked(const int r, const int f, const Color side)
+bool Board::isSquareAttacked(const Square &sq, const Color side) const
 {
-	for(int p = bP; p <= wK; p=p+1)
+	for(int piece = bP; piece <= wK; piece = piece+1)
 	{
 		// Skip pieces of defender color
-		if(PieceSide[p] != side)
+		if(PieceSide[piece] != side)
 			continue;
-
-		#ifdef DEBUG
-		if (r == RANK6 && f == FILEB)
-		cout << "Checking attacks by 	" << val2char[p] << endl;
-		#endif
    		
-   		// If the piece is not ranged
-		if(!Ranged[p])
-		{
-			for (int dir_idx = 0; dir_idx < NAttackdir[p]; dir_idx++)
+			for (int dir_idx = 0; dir_idx < NAttackdir[piece]; dir_idx++)
 			{
-				int rp = r - AttackDir[p][dir_idx][0];
-				int fp = f - AttackDir[p][dir_idx][1];
-
-				if (isOffBoard(rp, fp))
-					continue;
-
-				if (isPieceOccupiedSquare(rp, fp, p))
+				Square sqp = sq;
+				do
 				{
-					return true;
-				}
-			}
-
-		}
-
-		// If it's a ranged unit
-		else
-		{
-			for (int dir_idx = 0; dir_idx < NAttackdir[p]; dir_idx++)
-			{
-				int rp = r;
-				int fp = f;
-				int range = 1;
-
-				#ifdef DEBUG
-				//if (r == RANK6 && f == FILEB)
-				//	cout << r << f << endl;
-				#endif
-
-				while(!isOffBoard(rp, fp))
-				{
-					rp = r - AttackDir[p][dir_idx][0]*range;
-					fp = f - AttackDir[p][dir_idx][1]*range;
-					range++;
+					sqp.moveSquareOpposite((int *)AttackDir[piece][dir_idx]);
 					
-					#ifdef DEBUG
-					//if (r == RANK6 && f == FILEB)
-					cout << rp<< fp <<" " << range<< " "<< AttackDir[p][dir_idx][0] << " " << AttackDir[p][dir_idx][1] << endl;
-					#endif
-
-					if (isOffBoard(rp, fp))
+					if (isOffBoard(sqp))
 						break;
 
-					if (isPieceOccupiedSquare(rp, fp, p))
+					if (isPieceOccupiedSquare(sqp, piece))
 						return true;
 
-					if (isOccupiedSquare(rp, fp))
+					if (isOccupiedSquare(sqp))
 						break;
 
-				}
-			}
-		} 
-		
-	}
-
+				}while(!isOffBoard(sqp) && Ranged[piece]);
+					// Non-ranged piece run this once
+					// Ranged piece run until square is offboard
+			}		
+	}//end of piece loop
 	return false;
 }
 
-bool Board::isPieceOccupiedSquare(const int r, const int f, const int p)
+int Board::getSquareValue(const Square &sq) const
 {
-	if (Brd[r][f] == p)
+	return Brd[sq.Pos[0]][sq.Pos[1]];
+}
+
+bool Board::isPieceOccupiedSquare(const Square &sq, const int p) const
+{
+	if (getSquareValue(sq) == p)
 		return true;
 	return false;
 }
 
-bool Board::isOccupiedSquare(const int r, const int f)
+bool Board::isOccupiedSquare(const Square &sq) const
 {
-	if (Brd[r][f])
+	if (getSquareValue(sq))
 		return true;
 	return false;
 }
 
-bool Board::isOffBoard(const int r, const int f)
+bool Board::isOffBoard(const Square &sq) const
 {
-	if (r < 0 || r > 7 || f  < 0 || f > 7)
+	if (sq.Pos[0] < 0 || sq.Pos[0] > 7 || sq.Pos[1]  < 0 || sq.Pos[1] > 7)
 		return true;
 	return false; 
 }
+
 
 void Board::isSquareAttacked_test()
 {
@@ -331,7 +291,7 @@ void Board::isSquareAttacked_test()
 		"8/3p4/4pp2/8/8/2PP4/4PP2/8 w - - 0 1 ",
 		"8/2K5/8/8/8/5k2/8/8 w - - 0 1 ",
 		"8/2B2B2/8/8/3P2P1/4b3/4b3/8 w - - 0 1 ",
-		"8/1R6/1R6/8/1P6/5r2/8/8 w - - 0 1 ",
+		"8/1R3P2/1R2p3/8/8/4r3/8/8 w - - 0 1 ",
 		"8/2Q5/3P4/8/8/8/5q2/8 w - - 0 1 "
 
 	};
@@ -342,14 +302,15 @@ void Board::isSquareAttacked_test()
 		setBoardFromFEN(testFEN[test]);
 		printBoard();
 
-		cout << "WHITE attacks:" << endl;
+		cout << "Squares attacked by WHITE" << endl;
 		for(int r = RANK8; r >= RANK1; r--)
 		{
 			cout << "RANK " << r+1 << "\t";
 			
 			for(int f = FILEA; f <= FILEH; f++)
 			{
-				if (isSquareAttacked(r, f, WHITE) && !isOccupiedSquare(r, f))
+				Square sq(r, f);
+				if (isSquareAttacked(sq, WHITE) && !isOccupiedSquare(sq))
 					cout << "x" << "\t";
 				else
 					cout << "_" << "\t";
@@ -358,14 +319,15 @@ void Board::isSquareAttacked_test()
 			cout << endl << endl;
 		}
 
-		cout << "BLACK attacks:" << endl;
+		cout << "Square attacked by BLACK:" << endl;
 		for(int r = RANK8; r >= RANK1; r--)
 		{
 			cout << "RANK " << r+1 << "\t";
 			
 			for(int f = FILEA; f <= FILEH; f++)
 			{
-				if (isSquareAttacked(r, f, BLACK) && !isOccupiedSquare(r, f))
+				Square sq(r, f);
+				if (isSquareAttacked(sq, BLACK) && !isOccupiedSquare(sq))
 					cout << "x" << "\t";
 				else
 					cout << "_" << "\t";

@@ -23,7 +23,7 @@ const bool PieceSide[13] = { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
                            };
 
 #define MAXDIR 8
-const short AttackDir[NPIECES][MAXDIR][2] =
+const int AttackDir[NPIECES][MAXDIR][2] =
 {
 	{{0}                                   }, //NO_PIECE
 	{{-1, -1}, {-1, +1}                    }, //bP

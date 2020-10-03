@@ -1,13 +1,11 @@
-
 #ifndef __BOARD_H__
 #define __BOARD_H__
 
 #include "global.h"
+#include "square.h"
 
- 
 class Board
 {
-
 private:
 	
 	//standard 8x8 board
@@ -29,12 +27,13 @@ private:
 	short NMoves = 0;
 
 public:
-	void setBoardFromFEN(string fen);
-	void printBoard();
-	bool isSquareAttacked(const int r, const int f, const Color side);
-	bool isPieceOccupiedSquare(const int r, const int f, const int p);
-	bool isOccupiedSquare(const int r, const int f);
-	bool isOffBoard(const int r, const int f);
+	void setBoardFromFEN(const std::string fen);
+	void printBoard() const;
+	bool isSquareAttacked(const Square &sq, const Color side) const;
+	bool isPieceOccupiedSquare(const Square &sq, const int p) const;
+	bool isOccupiedSquare(const Square &sq) const;
+	bool isOffBoard(const Square &sq) const ;
+	int getSquareValue(const Square &sq) const;
 
 	//Test functions
 	void setBoardFromFEN_test();
