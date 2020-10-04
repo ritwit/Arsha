@@ -7,7 +7,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-void Board::printBoard()
+void Board::printBoard() const
 {
 	cout << "Printing Chess Board..." << endl << endl;
 	cout <<"\t";
@@ -231,27 +231,27 @@ bool Board::isSquareAttacked(const Square &sq, const Color side) const
 		// Skip pieces of defender color
 		if(PieceSide[piece] != side)
 			continue;
-   		
-			for (int dir_idx = 0; dir_idx < NAttackdir[piece]; dir_idx++)
+
+		for(int dir_idx = 0; dir_idx < NAttackdir[piece]; dir_idx++)
+		{
+			Square sqp = sq;
+			do
 			{
-				Square sqp = sq;
-				do
-				{
-					sqp.moveSquareOpposite((int *)AttackDir[piece][dir_idx]);
-					
-					if (isOffBoard(sqp))
-						break;
+				sqp.moveSquareOpposite((int *)AttackDir[piece][dir_idx]);
+				
+				if (isOffBoard(sqp))
+					break;
 
-					if (isPieceOccupiedSquare(sqp, piece))
-						return true;
+				if (isPieceOccupiedSquare(sqp, piece))
+				return true;
 
-					if (isOccupiedSquare(sqp))
-						break;
+				if (isOccupiedSquare(sqp))
+					break;
 
-				}while(!isOffBoard(sqp) && Ranged[piece]);
-					// Non-ranged piece run this once
-					// Ranged piece run until square is offboard
-			}		
+			}while(!isOffBoard(sqp) && Ranged[piece]);
+				// Non-ranged piece run this once
+				// Ranged piece run until square is offboard
+		}// end of attack direction for loop	
 	}//end of piece loop
 	return false;
 }

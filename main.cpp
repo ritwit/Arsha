@@ -10,7 +10,7 @@ using std::endl;
 using std::string;
 
 
-int main(int argc, char const *argv[])
+int main()
 {
 	cout << "Hello! I'm Arsha" << endl;
 	Board board;
