@@ -12,7 +12,7 @@ public:
 	Square(const int rank, int const file)
 		: Pos{rank, file}{}
 	Square()
-		: Square(0,0){}
+		: Square(99,99){}
 	Square(const int a[])
 		{Pos[0] = a[0]; Pos[1] = a[1];}
 	Square(const Square &sq)
@@ -25,6 +25,7 @@ public:
 	void moveSquare(const int dir[2]);
 	void moveSquareOpposite(const int dir[2]);
 	void moveSquareOpposite(const int dir1, const int dir2);
+	bool isEqual(const Square &sq ) const;
 
 };
 

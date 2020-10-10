@@ -19,16 +19,11 @@ void Board::printBoard() const
 	}
 
 	cout << endl << endl;
-
 	for(int r = RANK8; r >= RANK1; r--)
 	{
 		cout << "RANK " << r+1 <<"\t";
-		
 		for(int f = FILEA; f <= FILEH; f++)
-		{
 			cout << val2char[Brd[r][f]] << "\t";
-		}
-		
 		cout << endl << endl;
 	}
 
@@ -204,6 +199,67 @@ void Board::setBoardFromFEN(string fen)
 			cout << "ERROR" << endl;
 
 	}
+
+	setPlistFromBrd();
+}
+
+void Board::setPlistFromBrd()
+{
+	for(int r = RANK8; r >= RANK1; r--)
+		for(int f = FILEA; f <= FILEH; f++)
+		{
+			Square sq(r, f);
+			int piece = getSquareValue(sq);
+
+			if(piece)
+				Plist[piece].push_back(sq);		
+		}
+}
+
+void Board::resetBoard()
+{
+	for(int r = RANK8; r >= RANK1; r--)
+		for(int f = FILEA; f <= FILEH; f++)
+			Brd[r][f] = 0;
+
+	for(int p = bP; p < NPIECES; p++)
+		Plist[p].clear();
+}
+
+
+void Board::checkBoardConsistency() const
+{
+	// Check if every element of Plist is on Brd
+	for(int piece = bP; piece < NPIECES; piece++)
+		for(auto sq = Plist[piece].cbegin(); sq != Plist[piece].end(); sq++)
+			if(getSquareValue(*sq) != piece)
+			{
+				sq->printSquare();
+				cout << "Board inconsistent"<< " has no piece " << val2char[piece] << endl;
+			}
+	// Check if every Brd element is in Plist
+	for(int r = RANK8; r >= RANK1; r--)
+		for(int f = FILEA; f <= FILEH; f++)
+		{
+			Square sq(r, f);
+			int piece = getSquareValue(sq);
+
+			bool flag =false;
+			if(piece)
+			{
+				for(auto sqp = Plist[piece].cbegin(); sqp != Plist[piece].end(); sqp++)
+				{
+					if(sq.isEqual(*sqp))
+						flag = true;
+				}
+			}
+
+			if(!flag && piece)
+			{
+				cout << "Board inconsistent" << val2char[piece] 
+					 << " not in Piecelist" << r << "," << f << endl; 
+			}
+		}	
 }
 
 void Board::setBoardFromFEN_test()
@@ -211,15 +267,23 @@ void Board::setBoardFromFEN_test()
 	cout << "Starting FEN: "<< STARTFEN << endl;
 	setBoardFromFEN(STARTFEN);
 	printBoard();
+	checkBoardConsistency();
+	resetBoard();
 	cout << "After WHITE move: " << TESTFEN1 << endl;
 	setBoardFromFEN(TESTFEN1);
 	printBoard();
+	checkBoardConsistency();
+	resetBoard();
 	cout << "After BLACK move: " << TESTFEN2 << endl;
 	setBoardFromFEN(TESTFEN2);
 	printBoard();
+	checkBoardConsistency();
+	resetBoard();
 	cout << "After WHITE move: " << TESTFEN3 << endl;
 	setBoardFromFEN(TESTFEN3);
-	printBoard(); 
+	printBoard();
+	checkBoardConsistency();
+	resetBoard(); 
 }
 
 

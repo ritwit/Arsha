@@ -14,8 +14,8 @@ int main()
 {
 	cout << "Hello! I'm Arsha" << endl;
 	Board board;
-	//board.setBoardFromFEN_test();
-	board.isSquareAttacked_test();
+	board.setBoardFromFEN_test();
+	//board.isSquareAttacked_test();
 	//board.initExtBrd();
 	//board.initExtBrd_test();
 	cout << "Exiting"<< endl;

@@ -42,3 +42,10 @@ void Square::moveSquareOpposite(const int dir1, const int dir2)
 	Pos[0] -= dir1;
 	Pos[1] -= dir2;
 }
+
+bool Square::isEqual(const Square &sq ) const
+{
+	if (this->Pos[0] == sq.Pos[0] && this->Pos[1] == sq.Pos[1])
+		return true;
+	return false; 
+}
