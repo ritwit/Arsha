@@ -1,7 +1,10 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
+#include <vector>
 
 #include "board.h"
+#include "debug.h"
 
 using std::cout;
 using std::endl;
@@ -10,12 +13,12 @@ using std::string;
 void Board::printBoard() const
 {
 	cout << "Printing Chess Board..." << endl << endl;
-	cout <<"\t";
+	cout <<"      ";
 
 	for(int f = FILEA; f <= FILEH; f++)
 	{
 		char name = 'A' + f;
-		cout << "FILE " << name <<"\t";
+		cout << "  " << name <<"  ";
 	}
 
 	cout << endl << endl;
@@ -23,18 +26,24 @@ void Board::printBoard() const
 	{
 		cout << "RANK " << r+1 <<"\t";
 		for(int f = FILEA; f <= FILEH; f++)
-			cout << val2char[Brd[r][f]] << "\t";
+			cout << val2char[Brd[r][f]] << "    ";
 		cout << endl << endl;
 	}
 
-	if (ActiveColor == WHITE)
-		cout<< "Side to play: WHITE"  << endl;
-	if (ActiveColor == BLACK)
-		cout<< "Side to play: BLACK" << endl;
+	cout << "Side to play:"
+		 << string(ActiveColor == WHITE ? "WHITE" : "BLACK")
+		 << endl;
 
 	cout << "Total Moves:" << NMoves << endl;
 	cout << "Half Moves:"  << HalfMoves << endl;
-	cout << "En Passant Square:" << EnP << endl;
+	cout << "En Passant Square:" << endl;
+	EnP.printSquare();
+	
+	cout << "Castle Permissions: 	" 
+	     << "wK:" << Castle[0] << ", "
+	     << "wQ:" << Castle[1] << ", "
+	     << "bK:" << Castle[2] << ", "
+	     << "bQ:" << Castle[3] << endl;
 
 }
 
@@ -143,6 +152,7 @@ void Board::setBoardFromFEN(string fen)
 				ActiveColor = WHITE;
 			if (*c == 'b')
 				ActiveColor = BLACK;
+			//cout << "Active Color = " << ActiveColor << endl;
 		}
 
 		else if (section == 2)
@@ -166,13 +176,14 @@ void Board::setBoardFromFEN(string fen)
 				default:
 					cout << "ERROR: invalid castle" << endl;
 			}
+			//cout << "Castle Perm set" << endl;
 		}
 
 		else if (section == 3)
 		{
 			if( *c == '-')
 			{
-				EnP = 0;
+				EnP = OFFSQ;
 				continue;
 			}
 			
@@ -185,8 +196,7 @@ void Board::setBoardFromFEN(string fen)
 			int enp_file_no = enp_file - 'a';
 			int enp_rank_no = *c - '1';
 
-			EnP = 10*enp_rank_no + enp_file_no;
-
+			EnP = Square(enp_rank_no, enp_file_no);
 		}
 
 		else if (section == 4)
@@ -227,7 +237,7 @@ void Board::resetBoard()
 }
 
 
-void Board::checkBoardConsistency() const
+bool Board::checkBoardConsistency() const
 {
 	// Check if every element of Plist is on Brd
 	for(int piece = bP; piece < NPIECES; piece++)
@@ -236,6 +246,7 @@ void Board::checkBoardConsistency() const
 			{
 				sq->printSquare();
 				cout << "Board inconsistent"<< " has no piece " << val2char[piece] << endl;
+				return false;
 			}
 	// Check if every Brd element is in Plist
 	for(int r = RANK8; r >= RANK1; r--)
@@ -257,9 +268,12 @@ void Board::checkBoardConsistency() const
 			if(!flag && piece)
 			{
 				cout << "Board inconsistent" << val2char[piece] 
-					 << " not in Piecelist" << r << "," << f << endl; 
+					 << " not in Piecelist" << r << "," << f << endl;
+				return false; 
 			}
-		}	
+		}
+	// Everything alright
+	return true;	
 }
 
 void Board::setBoardFromFEN_test()
@@ -290,13 +304,13 @@ void Board::setBoardFromFEN_test()
 // side has the color which attcks the square
 bool Board::isSquareAttacked(const Square &sq, const Color side) const
 {
-	for(int piece = bP; piece <= wK; piece = piece+1)
+	for(int piece = bP; piece < NPIECES; piece = piece+1)
 	{
 		// Skip pieces of defender color
 		if(PieceSide[piece] != side)
 			continue;
 
-		for(int dir_idx = 0; dir_idx < NAttackdir[piece]; dir_idx++)
+		for(int dir_idx = 0; dir_idx < NAttackDir[piece]; dir_idx++)
 		{
 			Square sqp = sq;
 			do
@@ -322,7 +336,9 @@ bool Board::isSquareAttacked(const Square &sq, const Color side) const
 
 int Board::getSquareValue(const Square &sq) const
 {
-	return Brd[sq.Pos[0]][sq.Pos[1]];
+	if (!sq.isOffSquare())
+		return Brd[sq.Pos[0]][sq.Pos[1]];
+	return NO_PIECE;
 }
 
 bool Board::isPieceOccupiedSquare(const Square &sq, const int p) const
@@ -370,7 +386,6 @@ void Board::isSquareAttacked_test()
 		for(int r = RANK8; r >= RANK1; r--)
 		{
 			cout << "RANK " << r+1 << "\t";
-			
 			for(int f = FILEA; f <= FILEH; f++)
 			{
 				Square sq(r, f);
@@ -379,7 +394,6 @@ void Board::isSquareAttacked_test()
 				else
 					cout << "_" << "\t";
 			}
-			
 			cout << endl << endl;
 		}
 
@@ -387,7 +401,6 @@ void Board::isSquareAttacked_test()
 		for(int r = RANK8; r >= RANK1; r--)
 		{
 			cout << "RANK " << r+1 << "\t";
-			
 			for(int f = FILEA; f <= FILEH; f++)
 			{
 				Square sq(r, f);
@@ -396,10 +409,53 @@ void Board::isSquareAttacked_test()
 				else
 					cout << "_" << "\t";
 			}
-			
 			cout << endl << endl;
 		}
-
-
 	}
+}
+
+void Board::setBrdValue(const Square &sq, const int val)
+{
+	ASSERT(!sq.isOffSquare());
+	Brd[sq.Pos[0]][sq.Pos[1]] = val;
+}
+
+void Board::movePiecePlist(const int &piece, const Square &From, const Square &To)
+{
+	for (Square &sq : Plist[piece])
+	{
+		if (sq.isEqual(From))
+		{
+			sq = To;
+			return;
+		}
+	}
+
+	#ifndef NDEBUG
+	cout << "Square not found in Plist";
+	From.printSquare();
+	#endif
+}
+
+void Board::removePiecePlist(const int &piece, const Square &removeSq)
+{
+	// Erase-Remove idiom
+	auto match = [removeSq](const Square &sq){ return removeSq.isEqual(sq);};
+	auto end = std::remove_if(Plist[piece].begin(), Plist[piece].end(), match);
+	Plist[piece].erase(end, Plist[piece].end());
+}
+
+void Board::addPiecePlist(const int &piece, const Square &sq)
+{
+	Plist[piece].push_back(sq);
+}
+
+void Board::setEnpSquare(const Square &sq)
+{
+	EnP = sq;
+}
+
+Square Board::getEnpSquare() const
+{
+	return EnP;
 }

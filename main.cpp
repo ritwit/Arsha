@@ -3,6 +3,8 @@
 
 #include "board.h"
 #include "global.h"
+#include "movegen.h"
+#include "debug.h"
 
 
 using std::cout;
@@ -14,9 +16,11 @@ int main()
 {
 	cout << "Hello! I'm Arsha" << endl;
 	Board board;
-	board.setBoardFromFEN_test();
+
+	//board.setBoardFromFEN_test();
 	//board.isSquareAttacked_test();
-	//board.initExtBrd();
-	//board.initExtBrd_test();
-	cout << "Exiting"<< endl;
+	Move mv;
+	mv.test_applyMove(board);
+
+	cout << "Exiting...."<< endl;
 }

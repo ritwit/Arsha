@@ -1,6 +1,8 @@
 #ifndef __SQUARE_H__
 #define __SQUARE_H__
 
+#include "global.h"
+
 class Square
 {
 
@@ -9,10 +11,10 @@ public:
 
 public:
 
-	Square(const int rank, int const file)
+	Square(const int rank, const int file)
 		: Pos{rank, file}{}
 	Square()
-		: Square(99,99){}
+		: Square(OFFBRD,OFFBRD){}
 	Square(const int a[])
 		{Pos[0] = a[0]; Pos[1] = a[1];}
 	Square(const Square &sq)
@@ -26,9 +28,10 @@ public:
 	void moveSquareOpposite(const int dir[2]);
 	void moveSquareOpposite(const int dir1, const int dir2);
 	bool isEqual(const Square &sq ) const;
+	bool isOffSquare() const;
 
 };
 
-
+static const Square OFFSQ (OFFBRD, OFFBRD);
 
 #endif

@@ -49,3 +49,10 @@ bool Square::isEqual(const Square &sq ) const
 		return true;
 	return false; 
 }
+
+bool Square::isOffSquare() const
+{
+	if (Pos[0] == OFFBRD && Pos[1] == OFFBRD)
+		return true;
+	return false;
+}

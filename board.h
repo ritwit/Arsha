@@ -23,7 +23,7 @@ private:
 	Color ActiveColor;
 
 	// En Passant Decimal format rank|file
-	short EnP;
+	Square EnP;
 
 	// Halfmoves
 	short HalfMoves = 0;
@@ -34,6 +34,11 @@ private:
 public:
 	void setBoardFromFEN(const std::string fen);
 	void setPlistFromBrd();
+	void setBrdValue(const Square &sq, const int val);
+	void setEnpSquare(const Square &sq);
+	void movePiecePlist(const int &piece, const Square &From, const Square &To);
+	void removePiecePlist(const int &piece, const Square &removeSq);
+	void addPiecePlist(const int &piece, const Square &sq);
 	void resetBoard();
 	void printBoard() const;
 	bool isSquareAttacked(const Square &sq, const Color side) const;
@@ -41,7 +46,8 @@ public:
 	bool isOccupiedSquare(const Square &sq) const;
 	bool isOffBoard(const Square &sq) const ;
 	int getSquareValue(const Square &sq) const;
-	void checkBoardConsistency() const;
+	Square getEnpSquare() const;
+	bool checkBoardConsistency() const;
 
 	//Test functions
 	void setBoardFromFEN_test();

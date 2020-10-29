@@ -46,7 +46,7 @@ const int AttackDir[NPIECES][MAXDIR][2] =
      {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wK
 
 };
-const short NAttackdir[13] = 
+const short NAttackDir[13] = 
 {0, 2, 8, 4, 4, 8, 8, 2, 8, 4, 4, 8, 8};
 
 // Bishops, Rooks and Queen have ranged attack
@@ -68,6 +68,6 @@ enum Ranks
 };
 #define NRANKS 8
 #define NRANKSEXT 12
-#define OFFBRD 0
+#define OFFBRD 998
 
 #endif
