@@ -192,6 +192,7 @@ void Move::printMove() const
 
 void Move::test_applyMove(Board &bd)
 {
+	// Should have used a loop !!
 	cout << "Starting FEN: "<< STARTFEN << endl;
 	bd.setBoardFromFEN(STARTFEN);
 	bd.printBoard();
@@ -279,10 +280,33 @@ void Move::test_applyMove(Board &bd)
 	applyMove(bd);
 	bd.printBoard();
 	ASSERT(bd.checkBoardConsistency());
-	print_separator();
-
 	print_double_separator();
-	
+
+	cout << "Capture tests" << endl;
+	std::string captureFEN = "k4n2/1b4P1/8/8/3n4/5R2/3Q4/7K w - - 0 1 ";
+	bd.resetBoard();
+	bd.setBoardFromFEN(captureFEN);
+	bd.printBoard();
+	print_separator();
+	*this = Move(Square(RANK7, FILEG), Square(RANK8, FILEF), wP,
+		bN, OFFSQ, wQ, NOCASTLE, NOPJUMP);
+	printMove();
+	applyMove(bd);
+	bd.printBoard();
+	ASSERT(bd.checkBoardConsistency());
+	print_separator();
+	cout << "bN captures wR" << endl;
+	bd.resetBoard();
+	bd.setBoardFromFEN(captureFEN);
+	bd.printBoard();
+	print_separator();
+	*this = Move(Square(RANK4, FILED), Square(RANK3, FILEF), bN,
+		wR, OFFSQ, NO_PIECE, NOCASTLE, NOPJUMP);
+	printMove();
+	applyMove(bd);
+	bd.printBoard();
+	ASSERT(bd.checkBoardConsistency());
+	print_separator();
 
 }
 
