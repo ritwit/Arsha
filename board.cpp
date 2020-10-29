@@ -30,16 +30,16 @@ void Board::printBoard() const
 		cout << endl << endl;
 	}
 
-	cout << "Side to play:"
+	cout << "Side to play: "
 		 << string(ActiveColor == WHITE ? "WHITE" : "BLACK")
 		 << endl;
 
-	cout << "Total Moves:" << NMoves << endl;
-	cout << "Half Moves:"  << HalfMoves << endl;
-	cout << "En Passant Square:" << endl;
+	cout << "Total Moves: " << NMoves << endl;
+	cout << "Half Moves: "  << HalfMoves << endl;
+	cout << "En Passant Square: " << endl;
 	EnP.printSquare();
 	
-	cout << "Castle Permissions: 	" 
+	cout << "Castle Permissions: " 
 	     << "wK:" << Castle[0] << ", "
 	     << "wQ:" << Castle[1] << ", "
 	     << "bK:" << Castle[2] << ", "

@@ -60,14 +60,16 @@ enum Files
 	FILEA, FILEB, FILEC, FILED, FILEE, FILEF, FILEG, FILEH
 };
 #define NFILES 8
-#define NFILESEXT 10
+const char VAL2FILE[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 
 enum Ranks
 {
 	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8
 };
 #define NRANKS 8
-#define NRANKSEXT 12
+const char VAL2RANK[] = {'1', '2', '3', '4', '5', '6', '7', '8'};
+
+
 #define OFFBRD 998
 
 #endif

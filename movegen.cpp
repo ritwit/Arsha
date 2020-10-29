@@ -306,8 +306,7 @@ void Move::test_applyMove(Board &bd)
 	applyMove(bd);
 	bd.printBoard();
 	ASSERT(bd.checkBoardConsistency());
-	print_separator();
-
+	print_double_separator();
 }
 
 /*

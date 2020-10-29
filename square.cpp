@@ -16,7 +16,12 @@ void Square::getSquare(int &rank, int &file) const
 
 void Square::printSquare() const
 {
-	std::cout << "Square(" << Pos[0] <<"," << Pos[1] << ")" << std::endl;
+	if(!this->isOffSquare())
+	{	std::cout << "Square(" << VAL2FILE[Pos[1]] <<","
+		 << VAL2RANK[Pos[0]] << ")" << std::endl;
+	}
+	else
+		std::cout << "EMPTY" << std::endl;
 }
 
 void Square::moveSquare(const int dir1, const int dir2)
