@@ -38,7 +38,7 @@ const int MoveDir[NPIECES][MAXDIR][2] =
      {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wK
 
 };
-const short NAttackdir[13] = 
+const short NMovedir[13] = 
 {0, 1, 8, 4, 4, 8, 8, 1, 8, 4, 4, 8, 8};
 
 class Move
@@ -59,8 +59,8 @@ public:
     Move(const Square From1,
          const Square To1,
          const int piece,
-         const int Capture = NO_PIECE,
-         const Square Enp = OFFSQ,
+         const int Capture = NO_PIECE, /*NO_PIECE if EnP capture */
+         const Square Enp = OFFSQ,/*To and Enp are same! replace by int? Need to change capture in pawn move gen*/
          const int Promotion = NO_PIECE,
          const int Castle = NOCASTLE,
          const int PawnJump = NOPJUMP)
@@ -94,10 +94,12 @@ public:
     void printMove() const;
 
 private:
-    void pushNormalMove();
-    void pushCaptureMove();
-    void pushCastleMove();
     void removeIllegalMoves();
+    void addCastleMoves(const Board &bd);
+    void addPawnMoves(const Board &bd, const Square &sq, const int &piece);
+    bool isPromotion(const int &piece, const Square &to);
+    void addPromotionMoves(const Square &sq, const Square &single_jump,
+        const int piece, const int capture);
 };
 
 

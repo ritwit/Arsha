@@ -8,7 +8,7 @@
 
 class Board
 {
-private:
+public:
 	
 	//standard 8x8 board
 	short Brd[NRANKS][NFILES] = {0};
@@ -46,6 +46,7 @@ public:
 	bool isOccupiedSquare(const Square &sq) const;
 	bool isOffBoard(const Square &sq) const ;
 	int getSquareValue(const Square &sq) const;
+	int getActiveColor()const;
 	Square getEnpSquare() const;
 	bool checkBoardConsistency() const;
 
