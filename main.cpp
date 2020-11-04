@@ -19,8 +19,10 @@ int main()
 
 	//board.setBoardFromFEN_test();
 	//board.isSquareAttacked_test();
-	Move mv;
-	mv.test_applyMove(board);
+	//Move mv;
+	//mv.test_applyMove(board);
+	MoveGenerator mvgen;
+	mvgen.test_addPawnMoves(board);
 
 	cout << "Exiting...."<< endl;
 }

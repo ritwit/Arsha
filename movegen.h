@@ -93,6 +93,9 @@ public:
     void applyMove(Board &bd) const;
     void printMove() const;
 
+    void test_addPawnMoves(Board &bd);
+    void printAllMovesGenerated(Board &bd);
+
 private:
     void removeIllegalMoves();
     void addCastleMoves(const Board &bd);

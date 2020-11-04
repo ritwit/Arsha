@@ -310,13 +310,46 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 			else
 				addPromotionMoves(sq, sq_capture, piece, piece_capture); 
 		}
-		
+
 		// Add Enp move
 		else if (sq_capture.isEqual(bd.EnP))
 		{
 			MoveList.push_back(Move(sq, sq_capture, piece, NO_PIECE, sq_capture));
 		}
 	}
+}
+
+void MoveGenerator::test_addPawnMoves(Board &bd)
+{
+	bd.setBoardFromFEN(STARTFEN);
+	bd.printBoard();
+	print_separator();
+	cout << "Genrate pawn moves on E file" << endl;
+	addPawnMoves(bd, Square(RANK2, FILEE)  ,wP);
+	printAllMovesGenerated(bd);
+	
+	// Promotion test
+	bd.resetBoard();
+	bd.setBoardFromFEN("K3B1n1/1Pp2P2/8/8/8/8/3p4/k7 w - - 0 1 ");
+	bd.printBoard();
+	print_separator();
+	cout << "Promotion move generation testing" << endl;
+	addPawnMoves(bd, Square(RANK7, FILEF)  ,wP);
+	printAllMovesGenerated(bd);
+}
+
+void MoveGenerator::printAllMovesGenerated(Board &bd)
+{
+	for (Move &mv : MoveList)
+	{
+		mv.printMove();
+		print_separator();
+		Board bdt = bd;
+		mv.applyMove(bdt);
+		bdt.printBoard();
+		print_double_separator();
+	}
+
 }
 
 void MoveGenerator::addPromotionMoves(const Square &sq, const Square &single_jump,

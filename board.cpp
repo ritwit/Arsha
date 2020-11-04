@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <algorithm>
 #include <vector>
 
@@ -9,6 +10,28 @@
 using std::cout;
 using std::endl;
 using std::string;
+
+
+// Copy constructor
+Board::Board(const Board &bd)
+{
+	//for(int i = 0; i < NRANKS; i++)
+	//	for(int j = 0; j < NFILES; j++)
+	//		Brd[i][j] = bd.Brd[i][j];
+	std::memcpy(Brd, bd.Brd, NRANKS*NFILES*sizeof(short));
+
+	// Plist
+	for (int i = 0; i < NPIECES; i++)
+	{
+		Plist[i] = bd.Plist[i];
+	}
+
+	std::memcpy(Castle, bd.Castle, 4*sizeof(short));
+	ActiveColor = bd.ActiveColor;
+	EnP = bd.EnP;
+	HalfMoves = bd.HalfMoves;
+	NMoves = bd.NMoves;
+}
 
 void Board::printBoard() const
 {

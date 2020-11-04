@@ -32,6 +32,8 @@ public:
 	short NMoves = 0;
 
 public:
+	Board(){}
+	Board(const Board &bd);
 	void setBoardFromFEN(const std::string fen);
 	void setPlistFromBrd();
 	void setBrdValue(const Square &sq, const int val);
