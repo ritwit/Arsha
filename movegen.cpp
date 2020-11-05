@@ -321,6 +321,7 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 
 void MoveGenerator::test_addPawnMoves(Board &bd)
 {
+	/*
 	bd.setBoardFromFEN(STARTFEN);
 	bd.printBoard();
 	print_separator();
@@ -336,6 +337,17 @@ void MoveGenerator::test_addPawnMoves(Board &bd)
 	cout << "Promotion move generation testing" << endl;
 	addPawnMoves(bd, Square(RANK7, FILEF)  ,wP);
 	printAllMovesGenerated(bd);
+	*/
+	// Enp test
+	bd.resetBoard();
+	bd.setBoardFromFEN("k7/4ppp1/8/8/5Pp1/8/1PPPP3/K7 b - f3 0 1 ");
+	bd.printBoard();
+	print_separator();
+	cout << "En Passant move generation testing" << endl;
+	addPawnMoves(bd, Square(RANK4, FILEG) , bP);
+	printAllMovesGenerated(bd);
+
+
 }
 
 void MoveGenerator::printAllMovesGenerated(Board &bd)
