@@ -74,6 +74,7 @@ void Move::applyMove(Board &bd) const
 	finish:
 	{
 		// Increment play counter and switch color
+		// If rook or king moved, remove castle perm
 		
 		// If bd already has an enp squre that is not empty, remove it 
 		if( !OFFSQ.isEqual(bd.getEnpSquare()) && !PawnJump )
@@ -249,6 +250,61 @@ void MoveGenerator::generateMoves(const Board &bd)
 
 void MoveGenerator::addCastleMoves(const Board &bd)
 {
+	// If no castle permissions return
+	if (!(bd.Castle[0] || bd.Castle[1] || bd.Castle[2] || bd.Castle[3]))
+		return;
+
+	int king_side;
+	int queen_side;
+	Square king_side_passage;
+	Square queen_side_passage;
+	Color opposite_color;
+
+	Square king_sq = bd.ActiveColor == WHITE ?
+					 bd.Plist[wK][0] : bd.Plist[bK][0];
+
+	if (bd.ActiveColor == WHITE)
+	{
+		king_side = 0;
+		queen_side = 1;
+		opposite_color = BLACK;
+		king_side_passage.setSquare(RANK1, FILEF);
+		queen_side_passage.setSquare(RANK1, FILED);
+	}
+	else
+	{
+		king_side = 2;
+		queen_side = 3;
+		opposite_color = WHITE;
+		king_side_passage.setSquare(RANK8, FILEF);
+		queen_side_passage.setSquare(RANK8, FILED);
+	}
+
+	// If king attacked, return
+	if(bd.isSquareAttacked(king_sq, opposite_color))
+		return;
+
+	// Push Castle king side if permissible
+	if(bd.Castle[king_side] &&
+	   !bd.isSquareAttacked(king_side_passage, opposite_color)
+	   )
+	{
+		int castle_side = bd.ActiveColor == WHITE ?
+			WKINGSIDE : BKINGSIDE;
+		MoveList.push_back(Move(OFFSQ, OFFSQ, NO_PIECE,
+			NO_PIECE, OFFSQ, castle_side));
+	}
+
+	// Push Castle Queen side moves
+	if(bd.Castle[queen_side] &&
+	   !bd.isSquareAttacked(queen_side_passage, opposite_color)
+	   )
+	{
+		int castle_side = bd.ActiveColor == WHITE ?
+			WQUEENSIDE : BQUEENSIDE;
+		MoveList.push_back(Move(OFFSQ, OFFSQ, NO_PIECE,
+			NO_PIECE, OFFSQ, castle_side));
+	}
 
 }
 
@@ -321,7 +377,7 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 
 void MoveGenerator::test_addPawnMoves(Board &bd)
 {
-	/*
+	
 	bd.setBoardFromFEN(STARTFEN);
 	bd.printBoard();
 	print_separator();
@@ -337,7 +393,7 @@ void MoveGenerator::test_addPawnMoves(Board &bd)
 	cout << "Promotion move generation testing" << endl;
 	addPawnMoves(bd, Square(RANK7, FILEF)  ,wP);
 	printAllMovesGenerated(bd);
-	*/
+	
 	// Enp test
 	bd.resetBoard();
 	bd.setBoardFromFEN("k7/4ppp1/8/8/5Pp1/8/1PPPP3/K7 b - f3 0 1 ");
@@ -392,9 +448,6 @@ bool MoveGenerator::isPromotion(const int &piece, const Square &to)
 	else
 		return false;
 }
-
-
-
 
 void Move::test_applyMove(Board &bd)
 {
