@@ -250,6 +250,9 @@ void MoveGenerator::generateMoves(const Board &bd)
 
 void MoveGenerator::addCastleMoves(const Board &bd)
 {
+	// It's ok if the king ends up in check.
+	// Another function will remove these moves. 
+
 	// If no castle permissions return
 	if (!(bd.Castle[0] || bd.Castle[1] || bd.Castle[2] || bd.Castle[3]))
 		return;
@@ -258,6 +261,8 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 	int queen_side;
 	Square king_side_passage;
 	Square queen_side_passage;
+	Square king_final_kside;
+	Square king_final_qside;
 	Color opposite_color;
 
 	Square king_sq = bd.ActiveColor == WHITE ?
@@ -270,6 +275,8 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 		opposite_color = BLACK;
 		king_side_passage.setSquare(RANK1, FILEF);
 		queen_side_passage.setSquare(RANK1, FILED);
+		king_final_kside.setSquare(RANK1, FILEG);
+		king_final_qside.setSquare(RANK1, FILEC);
 	}
 	else
 	{
@@ -278,6 +285,8 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 		opposite_color = WHITE;
 		king_side_passage.setSquare(RANK8, FILEF);
 		queen_side_passage.setSquare(RANK8, FILED);
+		king_final_kside.setSquare(RANK8, FILEG);
+		king_final_qside.setSquare(RANK8, FILEC);
 	}
 
 	// If king attacked, return
@@ -285,9 +294,12 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 		return;
 
 	// Push Castle king side if permissible
+	// Check if squares are empty or attacked
 	if(bd.Castle[king_side] &&
-	   !bd.isSquareAttacked(king_side_passage, opposite_color)
-	   )
+	   !bd.isSquareAttacked(king_side_passage, opposite_color) &&
+	   	bd.isOccupiedSquare(king_side_passage) &&
+	   	bd.isOccupiedSquare(king_final_kside) 
+	   	)
 	{
 		int castle_side = bd.ActiveColor == WHITE ?
 			WKINGSIDE : BKINGSIDE;
@@ -297,7 +309,9 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 
 	// Push Castle Queen side moves
 	if(bd.Castle[queen_side] &&
-	   !bd.isSquareAttacked(queen_side_passage, opposite_color)
+	   !bd.isSquareAttacked(queen_side_passage, opposite_color) &&
+	   bd.isOccupiedSquare(queen_side_passage) &&
+	   bd.isOccupiedSquare(king_final_qside)
 	   )
 	{
 		int castle_side = bd.ActiveColor == WHITE ?
@@ -307,8 +321,12 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 	}
 
 }
+/*
+void MoveGenerator::test_addCastleMoves()
+{
 
-
+}
+*/
 
 // King of active color cannot be in check
 // King of opposite color cannot be captured
@@ -405,6 +423,8 @@ void MoveGenerator::test_addPawnMoves(Board &bd)
 
 
 }
+
+
 
 void MoveGenerator::printAllMovesGenerated(Board &bd)
 {
