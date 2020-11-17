@@ -95,12 +95,13 @@ public:
 
     void test_addPawnMoves(Board &bd);
     void test_addCastleMoves(Board &bd);
+    void test_generateMoves(Board &bd);
 
     void printAllMovesGenerated(Board &bd);
     void clearMoves();
 
 private:
-    void removeIllegalMoves();
+    void removeIllegalMoves(const Board &bd);
     void addCastleMoves(const Board &bd);
     void addPawnMoves(const Board &bd, const Square &sq, const int &piece);
     bool isPromotion(const int &piece, const Square &to);

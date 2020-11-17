@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 
 #include "board.h"
 #include "movegen.h"
@@ -199,39 +200,50 @@ void MoveGenerator::generateMoves(const Board &bd)
 	addCastleMoves(bd);
 
 	for(int piece = bP; piece < NPIECES; piece++)
+	{
+		INFO("Finding moves for " << val2char[piece]);
 		for (Square sq: bd.Plist[piece])
 		{
 			// If it's opponents piece, skip
 			if(PieceSide[piece] != bd.ActiveColor)
+			{
+				INFO("Not Active color; skip");
 				continue;
+			}
 
+			// Pawns cannot capture in the direction they move
+			// They can do two square jump, capture by En Passant
+			// and get promoted. So, they are special.
+			// The guy who invented chess didn't want to
+			// make it easy for programmers obviously.
+			else if (piece == wP || piece == bP)
+			{
+				addPawnMoves(bd, sq, piece);
+				INFO("Added Pawn Moves");
+				continue;
+			}	
+
+			// Non-Pawn pieces
 			for(int dir_idx = 0; dir_idx < NMovedir[piece]; dir_idx++)
 			{
 				Square capture_sq = sq;
 				do
 				{
 					capture_sq.moveSquare((int *)MoveDir[piece][dir_idx]);
+					if (bd.isOffBoard(capture_sq)) 
+						break;
 					int capture_piece = bd.getSquareValue(capture_sq);
 					
-					// Occupied by same color
+					// Occupied by same color 
+					// Skips if square is empty
 					if (PieceSide[capture_piece] == bd.ActiveColor)
 						break;
 
-					// Pawns cannot capture in the direction they move
-					// They can do two square jump, capture by En Passant
-					// and get promoted. So, they are kinda special
-					// The guy who invented chess didn't want to
-					// make it easy for programmers obviously.
-					else if (piece == wP || piece == bP)
-					{
-						addPawnMoves(bd, sq, piece);
-						break;
-					}
-					
 					// If empty square, add move to list
 					else if (capture_piece == NO_PIECE)
 					{
 						MoveList.push_back(Move(sq, capture_sq, piece));
+						INFO("Adding Move to empty square");
 						continue;
 					}
 
@@ -239,6 +251,7 @@ void MoveGenerator::generateMoves(const Board &bd)
 					else if (PieceSide[capture_piece] != bd.ActiveColor)
 					{	
 						MoveList.push_back(Move(sq, capture_sq, piece, capture_piece));
+						INFO("Adding capture move");
 						break;
 					}
 
@@ -246,7 +259,50 @@ void MoveGenerator::generateMoves(const Board &bd)
 				// Unranged loop once
 			} // Move direction loop 
 		} // Piece list loop
-	removeIllegalMoves();
+	}// Piece type loop
+	removeIllegalMoves(bd);
+}
+
+
+void MoveGenerator::test_generateMoves(Board &bd)
+{
+	std::vector<string> test_fens;
+	//test_fens.push_back(STARTFEN);
+	test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R w KQkq - 0 1 ");
+	//test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R b KQkq - 0 1 ");
+
+	for(string &fen: test_fens)
+	{
+		bd.resetBoard();
+		clearMoves();
+		bd.setBoardFromFEN(fen);
+		bd.printBoard();
+		print_separator();
+		cout << "Generating all possible legal moves" << endl;
+		generateMoves(bd);
+		printAllMovesGenerated(bd);
+		print_double_separator();
+		cout << "Next case" << endl;
+		print_double_separator();
+	}
+	cout << "End Castling test" << endl;
+}
+
+void MoveGenerator::removeIllegalMoves(const Board &bd)
+{
+	// lambda for erase-remove idiom to detect illegal moves
+	auto illegal_move = [bd](const Move &mv)
+	{
+		Board bdt = bd;
+		mv.applyMove(bdt);
+		Color opposite_color = bdt.ActiveColor == WHITE ? BLACK : WHITE;
+		Square king_sq = bd.ActiveColor == WHITE ?
+			bd.Plist[wK][0] : bd.Plist[bK][0];
+		return bdt.isSquareAttacked(king_sq, opposite_color);
+	};
+
+	auto end = std::remove_if(MoveList.begin(), MoveList.end(), illegal_move);
+	MoveList.erase(end, MoveList.end());
 }
 
 void MoveGenerator::addCastleMoves(const Board &bd)
@@ -357,14 +413,6 @@ void MoveGenerator::test_addCastleMoves(Board &bd)
 void MoveGenerator::clearMoves()
 {
 	MoveList.clear();
-}
-
-
-// King of active color cannot be in check
-// King of opposite color cannot be captured
-void MoveGenerator::removeIllegalMoves()
-{
-	//MoveList.push_back(mv);
 }
 
 

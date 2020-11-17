@@ -18,7 +18,8 @@ enum Pieces
 };
 #define NPIECES 13
 
-const bool PieceSide[13] = { BLACK, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
+#define NO_COLOR 3
+const int PieceSide[13] = { NO_COLOR, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK,
                              WHITE, WHITE, WHITE, WHITE, WHITE, WHITE
                            };
 
