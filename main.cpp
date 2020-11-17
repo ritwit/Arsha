@@ -22,7 +22,7 @@ int main()
 	//Move mv;
 	//mv.test_applyMove(board);
 	MoveGenerator mvgen;
-	mvgen.test_addPawnMoves(board);
+	mvgen.test_addCastleMoves(board);
 
 	cout << "Exiting...."<< endl;
 }

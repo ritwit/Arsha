@@ -94,7 +94,10 @@ public:
     void printMove() const;
 
     void test_addPawnMoves(Board &bd);
+    void test_addCastleMoves(Board &bd);
+
     void printAllMovesGenerated(Board &bd);
+    void clearMoves();
 
 private:
     void removeIllegalMoves();

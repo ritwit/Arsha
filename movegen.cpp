@@ -7,6 +7,7 @@
 
 using std::cout;
 using std::endl;
+using std::string;
 
 
 void Move::applyMove(Board &bd) const
@@ -261,6 +262,7 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 	int queen_side;
 	Square king_side_passage;
 	Square queen_side_passage;
+	Square queen_side_rook_passage;
 	Square king_final_kside;
 	Square king_final_qside;
 	Color opposite_color;
@@ -277,6 +279,7 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 		queen_side_passage.setSquare(RANK1, FILED);
 		king_final_kside.setSquare(RANK1, FILEG);
 		king_final_qside.setSquare(RANK1, FILEC);
+		queen_side_rook_passage.setSquare(RANK1, FILEB);
 	}
 	else
 	{
@@ -287,6 +290,7 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 		queen_side_passage.setSquare(RANK8, FILED);
 		king_final_kside.setSquare(RANK8, FILEG);
 		king_final_qside.setSquare(RANK8, FILEC);
+		queen_side_rook_passage.setSquare(RANK8, FILEB);
 	}
 
 	// If king attacked, return
@@ -297,36 +301,64 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 	// Check if squares are empty or attacked
 	if(bd.Castle[king_side] &&
 	   !bd.isSquareAttacked(king_side_passage, opposite_color) &&
-	   	bd.isOccupiedSquare(king_side_passage) &&
-	   	bd.isOccupiedSquare(king_final_kside) 
+	   !bd.isOccupiedSquare(king_side_passage) &&
+	   !bd.isOccupiedSquare(king_final_kside) 
 	   	)
 	{
 		int castle_side = bd.ActiveColor == WHITE ?
 			WKINGSIDE : BKINGSIDE;
 		MoveList.push_back(Move(OFFSQ, OFFSQ, NO_PIECE,
-			NO_PIECE, OFFSQ, castle_side));
+			NO_PIECE, OFFSQ, NO_PIECE, castle_side));
+		INFO("Added king side castle move");
+		INFO("Castleside = " << castle_side);
 	}
 
 	// Push Castle Queen side moves
 	if(bd.Castle[queen_side] &&
 	   !bd.isSquareAttacked(queen_side_passage, opposite_color) &&
-	   bd.isOccupiedSquare(queen_side_passage) &&
-	   bd.isOccupiedSquare(king_final_qside)
+	   !bd.isOccupiedSquare(queen_side_passage) &&
+	   !bd.isOccupiedSquare(king_final_qside) &&
+	   !bd.isOccupiedSquare(queen_side_rook_passage)
 	   )
 	{
 		int castle_side = bd.ActiveColor == WHITE ?
 			WQUEENSIDE : BQUEENSIDE;
 		MoveList.push_back(Move(OFFSQ, OFFSQ, NO_PIECE,
-			NO_PIECE, OFFSQ, castle_side));
+			NO_PIECE, OFFSQ, NO_PIECE, castle_side));
+		INFO("Added queen side castle move");
+		INFO("Castleside = " << castle_side);
 	}
 
 }
-/*
-void MoveGenerator::test_addCastleMoves()
-{
 
+void MoveGenerator::test_addCastleMoves(Board &bd)
+{
+	std::vector<string> test_fens;
+	test_fens.push_back(STARTFEN);
+	test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R w KQkq - 0 1 ");
+	test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R b KQkq - 0 1 ");
+
+	for(string &fen: test_fens)
+	{
+		bd.resetBoard();
+		clearMoves();
+		bd.setBoardFromFEN(fen);
+		bd.printBoard();
+		print_separator();
+		cout << "Genrate Castle moves" << endl;
+		addCastleMoves(bd);
+		printAllMovesGenerated(bd);
+		print_double_separator();
+		cout << "Next test" << endl;
+	}
+	cout << "End Castling test" << endl;
 }
-*/
+
+void MoveGenerator::clearMoves()
+{
+	MoveList.clear();
+}
+
 
 // King of active color cannot be in check
 // King of opposite color cannot be captured
