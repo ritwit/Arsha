@@ -263,13 +263,12 @@ void MoveGenerator::generateMoves(const Board &bd)
 	removeIllegalMoves(bd);
 }
 
-
 void MoveGenerator::test_generateMoves(Board &bd)
 {
 	std::vector<string> test_fens;
 	//test_fens.push_back(STARTFEN);
-	test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R w KQkq - 0 1 ");
-	//test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R b KQkq - 0 1 ");
+	//test_fens.push_back("rN2k2r/8/8/8/8/8/8/R3Kn1R w KQkq - 0 1 ");
+	test_fens.push_back("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1 ");
 
 	for(string &fen: test_fens)
 	{
@@ -280,12 +279,32 @@ void MoveGenerator::test_generateMoves(Board &bd)
 		print_separator();
 		cout << "Generating all possible legal moves" << endl;
 		generateMoves(bd);
-		printAllMovesGenerated(bd);
+		cout << "Number of Moves " << getNumMoves();
+		//printAllMovesGenerated(bd);
 		print_double_separator();
 		cout << "Next case" << endl;
 		print_double_separator();
 	}
 	cout << "End Castling test" << endl;
+}
+
+long MoveGenerator::perftTestDepthOne(const string fen)
+{
+	Board bd;
+	bd.setBoardFromFEN(fen);
+	clearMoves();
+	//cout << "Given Board position" << endl;
+	//bd.printBoard();
+	print_separator();
+	generateMoves(bd);
+	//printAllMovesGenerated(bd);
+	cout << "Number of legal moves: " << MoveList.size() << endl;
+	return MoveList.size();
+}
+
+int MoveGenerator::getNumMoves() const
+{
+	return MoveList.size();
 }
 
 void MoveGenerator::removeIllegalMoves(const Board &bd)
@@ -297,10 +316,26 @@ void MoveGenerator::removeIllegalMoves(const Board &bd)
 		mv.applyMove(bdt);
 		Color opposite_color = bdt.ActiveColor == WHITE ? BLACK : WHITE;
 		Square king_sq = bd.ActiveColor == WHITE ?
-			bd.Plist[wK][0] : bd.Plist[bK][0];
+			bdt.Plist[wK][0] : bdt.Plist[bK][0];			
 		return bdt.isSquareAttacked(king_sq, opposite_color);
 	};
 
+	/*
+	for (Move &mv: MoveList)
+	{
+		if (illegal_move(mv))
+		{
+			mv.printMove();
+			cout << "illegal_move" << endl;
+		}
+		else
+		{
+			mv.printMove();
+			cout << "legal move" << endl;
+		}
+		print_separator();
+	}
+	*/
 	auto end = std::remove_if(MoveList.begin(), MoveList.end(), illegal_move);
 	MoveList.erase(end, MoveList.end());
 }

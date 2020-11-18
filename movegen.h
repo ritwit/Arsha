@@ -90,12 +90,14 @@ private:
 
 public:
     void generateMoves(const Board &bd);
-    void applyMove(Board &bd) const;
+    //void applyMove(Board &bd) const;
     void printMove() const;
+    int getNumMoves() const;
 
     void test_addPawnMoves(Board &bd);
     void test_addCastleMoves(Board &bd);
     void test_generateMoves(Board &bd);
+    long perftTestDepthOne(std::string fen);
 
     void printAllMovesGenerated(Board &bd);
     void clearMoves();

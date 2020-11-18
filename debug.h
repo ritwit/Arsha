@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#define DLEVEL 3
+#define DLEVEL 2
 /*
 	0 - No debug
 	1 - errors
