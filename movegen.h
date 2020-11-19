@@ -81,6 +81,7 @@ private:
 	void applyCastleMove(Board &bd) const;
 	Square getCaptureEnpSquare() const;
 	Square generateEnpSquare() const;
+    void updateCastlePermissions(Board &bd) const;
 };
 
 class MoveGenerator

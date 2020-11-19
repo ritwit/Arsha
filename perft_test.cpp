@@ -60,6 +60,7 @@ bool perftTestSuite(std::string file_name)
 	int test_no = 0;
 	for(std::string &fen : fens)
 	{
+		print_separator();
 		cout << "Testing position: " << fen << endl;
 		long computed_nmoves = mvgen.perftTestDepthOne(fen);
 
@@ -77,6 +78,7 @@ bool perftTestSuite(std::string file_name)
 		}
 
 		test_no++;
+		print_separator();
 	}
 	
 

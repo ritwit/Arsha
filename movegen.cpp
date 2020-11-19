@@ -16,6 +16,9 @@ void Move::applyMove(Board &bd) const
 	int capture_piece = bd.getSquareValue(To);
 	int piece = bd.getSquareValue(From);
 	
+	// I like this goto! I dont care what you think
+	// After the move, change activeplayer on board,
+	// check castle perm etc
 	if(Castle)
 	{
 		applyCastleMove(bd);
@@ -76,16 +79,47 @@ void Move::applyMove(Board &bd) const
 	finish:
 	{
 		// Increment play counter and switch color
+		Color opposite_color = bd.ActiveColor == WHITE ? BLACK : WHITE;
+		bd.ActiveColor = opposite_color;
+
 		// If rook or king moved, remove castle perm
+		//updateCastlePermissions(bd); 
 		
-		// If bd already has an enp squre that is not empty, remove it 
+		// If bd already has an enp squre that is not empty, remove it
+		// Enp can be only used in the immediate next move 
 		if( !OFFSQ.isEqual(bd.getEnpSquare()) && !PawnJump )
 			bd.setEnpSquare(OFFSQ);
 
 		ASSERT(bd.checkBoardConsistency());
 		return;
 	}
+}
 
+void Move::updateCastlePermissions(Board &bd) const
+{
+	if(bd.getSquareValue(Square(RANK1, FILEA)) != wR)
+		bd.Castle[1] = 0;
+
+	if(bd.getSquareValue(Square(RANK1, FILEH)) != wR)
+		bd.Castle[0] = 0;
+
+	if(bd.getSquareValue(Square(RANK1, FILEE)) != wK)
+	{
+		bd.Castle[0] = 0;
+		bd.Castle[1] = 0;
+	}
+
+	if(bd.getSquareValue(Square(RANK8, FILEA)) != bR)
+		bd.Castle[3] = 0;
+
+	if(bd.getSquareValue(Square(RANK8, FILEH)) != bR)
+		bd.Castle[2] = 0;
+
+	if(bd.getSquareValue(Square(RANK8, FILEE)) != bK)
+	{
+		bd.Castle[2] = 0;
+		bd.Castle[3] = 0;
+	}
 }
 
 // The square of the piece that got captured by enp
@@ -295,7 +329,6 @@ long MoveGenerator::perftTestDepthOne(const string fen)
 	clearMoves();
 	//cout << "Given Board position" << endl;
 	//bd.printBoard();
-	print_separator();
 	generateMoves(bd);
 	//printAllMovesGenerated(bd);
 	cout << "Number of legal moves: " << MoveList.size() << endl;
@@ -313,10 +346,11 @@ void MoveGenerator::removeIllegalMoves(const Board &bd)
 	auto illegal_move = [bd](const Move &mv)
 	{
 		Board bdt = bd;
-		mv.applyMove(bdt);
+		// After applying move, active color change
 		Color opposite_color = bdt.ActiveColor == WHITE ? BLACK : WHITE;
-		Square king_sq = bd.ActiveColor == WHITE ?
-			bdt.Plist[wK][0] : bdt.Plist[bK][0];			
+		mv.applyMove(bdt);
+		Square king_sq = opposite_color == BLACK ?
+			bdt.Plist[wK][0] : bdt.Plist[bK][0];
 		return bdt.isSquareAttacked(king_sq, opposite_color);
 	};
 
