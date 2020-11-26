@@ -16,9 +16,9 @@ void Square::getSquare(int &rank, int &file) const
 
 void Square::printSquare() const
 {
-	if(!this->isOffSquare())
-	{	std::cout << "Square(" << VAL2FILE[Pos[1]] <<","
-		 << VAL2RANK[Pos[0]] << ")" << std::endl;
+	if(!this->isOffBoard())
+	{	std::cout << "Square(" << Pos[1] <<","
+		 << Pos[0] << ")" << std::endl;
 	}
 	else
 		std::cout << "EMPTY" << std::endl;
@@ -60,4 +60,11 @@ bool Square::isOffSquare() const
 	if (Pos[0] == OFFBRD && Pos[1] == OFFBRD)
 		return true;
 	return false;
+}
+
+bool Square::isOffBoard() const
+{
+	if (Pos[0] < 0 || Pos[0] > 7 || Pos[1]  < 0 || Pos[1] > 7)
+		return true;
+	return false; 
 }

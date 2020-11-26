@@ -83,7 +83,7 @@ void Move::applyMove(Board &bd) const
 		bd.ActiveColor = opposite_color;
 
 		// If rook or king moved, remove castle perm
-		//updateCastlePermissions(bd); 
+		updateCastlePermissions(bd); 
 		
 		// If bd already has an enp squre that is not empty, remove it
 		// Enp can be only used in the immediate next move 
@@ -322,18 +322,6 @@ void MoveGenerator::test_generateMoves(Board &bd)
 	cout << "End Castling test" << endl;
 }
 
-long MoveGenerator::perftTestDepthOne(const string fen)
-{
-	Board bd;
-	bd.setBoardFromFEN(fen);
-	clearMoves();
-	//cout << "Given Board position" << endl;
-	//bd.printBoard();
-	generateMoves(bd);
-	//printAllMovesGenerated(bd);
-	cout << "Number of legal moves: " << MoveList.size() << endl;
-	return MoveList.size();
-}
 
 int MoveGenerator::getNumMoves() const
 {
@@ -523,6 +511,8 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 		// Get the square attacked and the piece placed there
 		Square sq_capture = sq;
 		sq_capture.moveSquare((int *)AttackDir[piece][dir_idx]);
+		if(sq_capture.isOffBoard()) 
+			continue;
 		int piece_capture = bd.getSquareValue(sq_capture);
 		
 		// If there's something of opponents color on there, add capture
@@ -579,12 +569,20 @@ void MoveGenerator::printAllMovesGenerated(Board &bd)
 {
 	for (Move &mv : MoveList)
 	{
-		mv.printMove();
-		print_separator();
+		//mv.printMove();
+		//print_separator();
 		Board bdt = bd;
 		mv.applyMove(bdt);
-		bdt.printBoard();
-		print_double_separator();
+		//bdt.printBoard();
+		ASSERT(bdt.checkBoardConsistency());
+		if(!bdt.checkBoardConsistency())
+		{
+			bdt.printBoard();
+			cout << "Starting board" << endl;
+			bd.printBoard();
+			mv.printMove();
+		}
+		//print_double_separator();
 	}
 
 }

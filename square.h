@@ -29,6 +29,7 @@ public:
 	void moveSquareOpposite(const int dir1, const int dir2);
 	bool isEqual(const Square &sq ) const;
 	bool isOffSquare() const;
+	bool isOffBoard() const;
 
 };
 
