@@ -325,9 +325,9 @@ void Board::setBoardFromFEN_test()
 
 
 // side has the color which attcks the square
-bool Board::isSquareAttacked(const Square &sq, const Color side) const
+bool Board::isSquareAttacked(const Square &sq, const Color &side) const
 {
-	for(int piece = bP; piece < NPIECES; piece = piece+1)
+	for(int piece = bP; piece < NPIECES; piece++)
 	{
 		// Skip pieces of defender color
 		if(PieceSide[piece] != side)

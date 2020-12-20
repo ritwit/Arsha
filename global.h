@@ -47,7 +47,7 @@ const int AttackDir[NPIECES][MAXDIR][2] =
      {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wK
 
 };
-const short NAttackDir[13] = 
+const short NAttackDir[13] =
 {0, 2, 8, 4, 4, 8, 8, 2, 8, 4, 4, 8, 8};
 
 // Bishops, Rooks and Queen have ranged attack
@@ -58,14 +58,14 @@ const char val2char[] = {'-' , 'p', 'n', 'b', 'r', 'q', 'k', 'P', 'N', 'B', 'R',
 
 enum Files
 {
-	FILEA, FILEB, FILEC, FILED, FILEE, FILEF, FILEG, FILEH
+	FILEA, FILEB, FILEC, FILED, FILEE, FILEF, FILEG, FILEH, FILEMAX
 };
 #define NFILES 8
 const char VAL2FILE[] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'};
 
 enum Ranks
 {
-	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8
+	RANK1, RANK2, RANK3, RANK4, RANK5, RANK6, RANK7, RANK8, RANKMAX
 };
 #define NRANKS 8
 const char VAL2RANK[] = {'1', '2', '3', '4', '5', '6', '7', '8'};

@@ -24,29 +24,7 @@ void Square::printSquare() const
 		std::cout << "EMPTY" << std::endl;
 }
 
-void Square::moveSquare(const int dir1, const int dir2)
-{
-	Pos[0] += dir1;
-	Pos[1] += dir2;
-}
 
-void Square::moveSquare(const int dir[2])
-{
-	Pos[0] += dir[0];
-	Pos[1] += dir[1];
-}
-
-void Square::moveSquareOpposite(const int dir[2])
-{
-	Pos[0] -= dir[0];
-	Pos[1] -= dir[1];
-}
-
-void Square::moveSquareOpposite(const int dir1, const int dir2)
-{
-	Pos[0] -= dir1;
-	Pos[1] -= dir2;
-}
 
 bool Square::isEqual(const Square &sq ) const
 {
@@ -55,12 +33,6 @@ bool Square::isEqual(const Square &sq ) const
 	return false; 
 }
 
-bool Square::isOffSquare() const
-{
-	if (Pos[0] == OFFBRD && Pos[1] == OFFBRD)
-		return true;
-	return false;
-}
 
 bool Square::isOffBoard() const
 {

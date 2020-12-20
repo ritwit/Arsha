@@ -68,8 +68,13 @@ bool perftTestSuite(const std::string &file_name)
 		bd.setBoardFromFEN(fen);
 		bd.printBoard();
 		*/
-		int max_depth = 5;
-		cout << "Testing position "<< test_no+1 <<" : " << fen << endl;
+		int max_depth = 4;
+		cout << "Testing Board position "<< test_no+1 <<" : " << fen << endl;
+		print_separator();
+		Board bd;
+		bd.setBoardFromFEN(fen);
+		bd.printBoard();
+		print_separator();
 
 		for(int test_depth = 1; test_depth < max_depth+1; test_depth++)
 		{

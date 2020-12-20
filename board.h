@@ -43,7 +43,7 @@ public:
 	void addPiecePlist(const int &piece, const Square &sq);
 	void resetBoard();
 	void printBoard() const;
-	bool isSquareAttacked(const Square &sq, const Color side) const;
+	bool isSquareAttacked(const Square &sq, const Color &side) const;
 	bool isPieceOccupiedSquare(const Square &sq, const int p) const;
 	bool isOccupiedSquare(const Square &sq) const;
 	bool isOffBoard(const Square &sq) const ;

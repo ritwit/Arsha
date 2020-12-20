@@ -23,12 +23,34 @@ public:
 	void setSquare(const int rank, const int file);
 	void getSquare(int &rank, int &file) const;
 	void printSquare() const;
-	void moveSquare(const int dir1, const int dir2);
-	void moveSquare(const int dir[2]);
-	void moveSquareOpposite(const int dir[2]);
-	void moveSquareOpposite(const int dir1, const int dir2);
+	inline void moveSquare(const int dir1, const int dir2)
+	{
+		Pos[0] += dir1;
+		Pos[1] += dir2;
+	}
+	inline void moveSquare(const int dir[2])
+	{
+		Pos[0] += dir[0];
+		Pos[1] += dir[1];
+	}
+	inline void moveSquareOpposite(const int dir[2])
+	{
+		Pos[0] -= dir[0];
+		Pos[1] -= dir[1];
+	}
+	inline void moveSquareOpposite(const int dir1, const int dir2)
+	{
+		Pos[0] -= dir1;
+		Pos[1] -= dir2;
+	}
 	bool isEqual(const Square &sq ) const;
-	bool isOffSquare() const;
+	inline bool isOffSquare() const
+	{
+		if (Pos[0] == OFFBRD && Pos[1] == OFFBRD)
+			return true;
+		return false;
+	}
+
 	bool isOffBoard() const;
 
 };
