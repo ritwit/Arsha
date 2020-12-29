@@ -2,6 +2,7 @@
 #include <string>
 
 #include "board.h"
+#include "eval.h"
 #include "global.h"
 #include "movegen.h"
 #include "debug.h"
@@ -28,8 +29,10 @@ int main()
 	//string fen = "8/8/8/8/8/8/6k1/4K2R w K - 0 1";
 	//mvgen.perftTestDepthOne(fen);
 
-	string file_name = "perftsuite.epd";
-	bool flag = perftTestSuite(file_name);
+	//string file_name = "perftsuite.epd";
+	//bool flag = perftTestSuite(file_name);
+	Evaluation ev;
+	ev.test_getMaterialDifference();
 
 	cout << "Exiting...."<< endl;
 }

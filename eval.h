@@ -5,7 +5,7 @@
 
 #define MATERIAL_DIFF 1
 
-int PieceValues[13] =
+const int PieceValues[13] =
 {
     0,          //NO_PIECE
     -100,       //bP
@@ -29,6 +29,7 @@ public:
     int EvalMethod;
 
 public:
+    Evaluation(){}
     Evaluation(const Board &bd,
                const int eval_method):
                Bd(bd),
@@ -36,6 +37,8 @@ public:
                {}
 
     int getValue() const;
+
+    void test_getMaterialDifference();
 
 private:
     int getMaterialDifference() const;
