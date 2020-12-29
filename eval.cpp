@@ -1,12 +1,15 @@
 #include <iostream>
 #include <cstdlib>
 
+#include "eval.h"
+#include "debug.h"
+
 
 int Evaluation::getValue() const
 {
     if(EvalMethod == MATERIAL_DIFF)
         return getMaterialDifference();
-    else if
+    else
     {
         std::cerr << "Not Implemented" << std::endl;
         exit(EXIT_FAILURE);
@@ -22,7 +25,7 @@ int Evaluation::getMaterialDifference() const
         {
             int piece = Bd.Brd[i][j];
             ASSERT( piece >= NO_PIECE && piece <= wK);
-            score += PieceVal[ piece ];
+            score += PieceValues[ piece ];
         }
 
     return score;

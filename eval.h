@@ -1,9 +1,11 @@
 #ifndef __EVAL_H__
 #define __EVAL_H__
 
+#include "board.h"
+
 #define MATERIAL_DIFF 1
 
-int PieceValues[]
+int PieceValues[13] =
 {
     0,          //NO_PIECE
     -100,       //bP
@@ -18,7 +20,7 @@ int PieceValues[]
     +550,       //wR
     +960,       //wQ
     +10000      //wK
-}
+};
 
 class Evaluation
 {
@@ -29,8 +31,8 @@ public:
 public:
     Evaluation(const Board &bd,
                const int eval_method):
-               bd(bd),
-               eval_method(eval_method)
+               Bd(bd),
+               EvalMethod(eval_method)
                {}
 
     int getValue() const;
@@ -38,6 +40,6 @@ public:
 private:
     int getMaterialDifference() const;
 
-}
+};
 
 #endif
