@@ -1,0 +1,58 @@
+#include <iostream>
+
+#include "eval.h"
+#include "global.h"
+#include "movegen.h"
+#include "search.h"
+
+using std::cout;
+using std::endl;
+
+#define HIGH_SCORE 10000000
+
+int Negamax::searchDepth(const Board bd, const int depth)
+{
+    int active_color = bd.ActiveColor;
+    int best_score = - HIGH_SCORE;
+
+    // Return score s.t. more positive score is better
+    // for the current player
+    if(depth == 0)
+    {
+        Evaluation ev(bd, MATERIAL_DIFF);
+        //int score = ev.getValue();
+        int score = active_color == WHITE ?
+                    ev.getValue(): -ev.getValue();
+        return score;
+    }
+
+    MoveGenerator mvgen;
+    mvgen.generateMoves(bd);
+
+    for(Move &mv: mvgen.MoveList)
+    {
+        Board bdt = bd;
+        mv.applyMove(bdt);
+        int score = -searchDepth(bdt, depth - 1);
+        if(score > best_score)
+            best_score = score;
+    }
+    return best_score;
+
+}
+
+void Negamax::test_searchDepth()
+{
+    int max_depth = 7;
+    Board bd;
+    bd.setBoardFromFEN("1K6/1P6/8/8/8/8/5r2/6k1 w - - 0 1 ");
+    cout << "Testing Negamax" << endl;
+
+    for(int depth = 0; depth < max_depth; depth++)
+    {
+        int score = searchDepth(bd, depth);
+        cout << "At depth: " << depth
+             << " Score: " << score << endl;
+    }
+}
+
