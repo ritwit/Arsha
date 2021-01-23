@@ -38,7 +38,7 @@ const int MoveDir[NPIECES][MAXDIR][2] =
      {-1,  0}, {+1 , 0}, { 0, -1}, { 0, +1}}, //wK
 
 };
-const short NMovedir[13] = 
+const short NMovedir[13] =
 {0, 1, 8, 4, 4, 8, 8, 1, 8, 4, 4, 8, 8};
 
 class Move
@@ -52,10 +52,8 @@ public:
     int Promotion;
     int Castle;
     int PawnJump;
-    
+
 public:
-    void printMove() const;
-    Move() {}
     Move(const Square From1,
          const Square To1,
          const int piece,
@@ -69,10 +67,13 @@ public:
           Piece(piece),
           Capture(Capture),
           Enp(Enp),
-          Promotion(Promotion), 
+          Promotion(Promotion),
           Castle(Castle),
-          PawnJump(PawnJump) { }
+          PawnJump(PawnJump) {}
+    // Delegate Null constructor
+    Move(): Move(OFFSQ, OFFSQ, NO_PIECE){}
     void applyMove(Board &bd) const;
+    void printMove() const;
 
     // Test code
     void test_applyMove(Board &bd);

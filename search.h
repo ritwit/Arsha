@@ -10,8 +10,11 @@ private:
 public:
     Negamax(){}
     Negamax(Board bd): Bd(bd) {}
-    int searchDepth(const Board bd, const int depth);
+    int searchDepth(const Board &bd, const int depth);
+    std::tuple <Move, int> findBestMove(const Board &bd, const int depth);
 
+    // Test functions
+    void test_findBestMove();
     void test_searchDepth();
 };
 

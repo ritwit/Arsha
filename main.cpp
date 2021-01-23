@@ -31,7 +31,7 @@ int main()
 	//Evaluation ev;
 	//ev.test_getMaterialDifference();
 
-	Negamax().test_searchDepth();
+	Negamax().test_findBestMove();
 
 
 	cout << "Exiting...."<< endl;
