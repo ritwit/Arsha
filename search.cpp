@@ -1,6 +1,7 @@
 #include <iostream>
 #include <tuple>
 
+#include "debug.h"
 #include "eval.h"
 #include "global.h"
 #include "movegen.h"
@@ -13,6 +14,7 @@ using std::endl;
 
 std::tuple <Move, int> Negamax::findBestMove(const Board &bd, const int depth)
 {
+    ASSERT(depth > 0);
     int best_score = -HIGH_SCORE;
     Move best_move;
 
@@ -81,12 +83,12 @@ void Negamax::test_searchDepth()
 
 void Negamax::test_findBestMove()
 {
-    int max_depth = 1;
+    int max_depth = 3;
     Board bd;
-    bd.setBoardFromFEN("1K6/1P6/8/8/8/8/5r2/6k1 w - - 0 1 ");
+    bd.setBoardFromFEN("5k2/2n5/4n3/8/1p6/2P5/4RPPP/5K2 w - - 0 1");
     cout << "Testing findBestMove" << endl;
 
-    for(int depth = 0; depth < max_depth; depth++)
+    for(int depth = 1; depth < max_depth; depth++)
     {
         Move best_move;
         int score;
