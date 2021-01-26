@@ -1,6 +1,7 @@
 #ifndef __SQUARE_H__
 #define __SQUARE_H__
 
+#include <string>
 #include "global.h"
 
 class Square
@@ -22,7 +23,11 @@ public:
 
 	void setSquare(const int rank, const int file);
 	void getSquare(int &rank, int &file) const;
+	bool isEqual(const Square &sq ) const;
+	bool isOffBoard() const;
 	void printSquare() const;
+	std::string getString() const;
+
 	inline void moveSquare(const int dir1, const int dir2)
 	{
 		Pos[0] += dir1;
@@ -43,15 +48,12 @@ public:
 		Pos[0] -= dir1;
 		Pos[1] -= dir2;
 	}
-	bool isEqual(const Square &sq ) const;
 	inline bool isOffSquare() const
 	{
 		if (Pos[0] == OFFBRD && Pos[1] == OFFBRD)
 			return true;
 		return false;
 	}
-
-	bool isOffBoard() const;
 
 };
 

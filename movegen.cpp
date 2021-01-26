@@ -15,7 +15,7 @@ void Move::applyMove(Board &bd) const
 {
 	int capture_piece = bd.getSquareValue(To);
 	int piece = bd.getSquareValue(From);
-	
+
 	// I like this goto! I dont care what you think
 	// After the move, change activeplayer on board,
 	// check castle perm etc
@@ -27,14 +27,14 @@ void Move::applyMove(Board &bd) const
 
 	ASSERT(!To.isOffSquare());
 	ASSERT(!From.isOffSquare());
-	
+
 	// Change Brd
 	bd.setBrdValue(To, piece);
 	bd.setBrdValue(From, NO_PIECE);
 
 	// Change Plist
 	bd.movePiecePlist(piece, From, To);
-		
+
 
 	if(Enp.isEqual(OFFSQ))
 	{
@@ -83,10 +83,10 @@ void Move::applyMove(Board &bd) const
 		bd.ActiveColor = opposite_color;
 
 		// If rook or king moved, remove castle perm
-		updateCastlePermissions(bd); 
-		
+		updateCastlePermissions(bd);
+
 		// If bd already has an enp squre that is not empty, remove it
-		// Enp can be only used in the immediate next move 
+		// Enp can be only used in the immediate next move
 		if( !OFFSQ.isEqual(bd.getEnpSquare()) && !PawnJump )
 			bd.setEnpSquare(OFFSQ);
 
@@ -131,7 +131,7 @@ Square Move::getCaptureEnpSquare() const
 	return Square(rank, file);
 }
 
-// The square that the pawn can move to capture via enp (same 
+// The square that the pawn can move to capture via enp (same
 // as the enp square in FEN)
 Square Move::generateEnpSquare() const
 {
@@ -220,12 +220,21 @@ void Move::printMove() const
 	To.printSquare();
 	cout << "ENpass:";
 	Enp.printSquare();
-	
+
 	cout << "Piece: " << val2char[Piece] << endl;
 	cout << "Capture: " << Capture << endl;
 	cout << "Promotion: " << Promotion << endl;
 	cout << "Castle: " << Castle << endl;
 	cout << "PawnJump: " << PawnJump <<endl;
+}
+
+string Move::getString() const
+{
+	string from_str = From.getString();
+	string to_str = To.getString();
+	string promotion = "";
+	return from_str + to_str + promotion;
+
 }
 
 
@@ -255,7 +264,7 @@ void MoveGenerator::generateMoves(const Board &bd)
 				addPawnMoves(bd, sq, piece);
 				INFO("Added Pawn Moves");
 				continue;
-			}	
+			}
 
 			// Non-Pawn pieces
 			for(int dir_idx = 0; dir_idx < NMovedir[piece]; dir_idx++)
@@ -264,11 +273,11 @@ void MoveGenerator::generateMoves(const Board &bd)
 				do
 				{
 					capture_sq.moveSquare((int *)MoveDir[piece][dir_idx]);
-					if (bd.isOffBoard(capture_sq)) 
+					if (bd.isOffBoard(capture_sq))
 						break;
 					int capture_piece = bd.getSquareValue(capture_sq);
-					
-					// Occupied by same color 
+
+					// Occupied by same color
 					// Skips if square is empty
 					if (PieceSide[capture_piece] == bd.ActiveColor)
 						break;
@@ -283,7 +292,7 @@ void MoveGenerator::generateMoves(const Board &bd)
 
 					// Occupied by opposite color, add capture
 					else if (PieceSide[capture_piece] != bd.ActiveColor)
-					{	
+					{
 						MoveList.push_back(Move(sq, capture_sq, piece, capture_piece));
 						INFO("Adding capture move");
 						break;
@@ -291,7 +300,7 @@ void MoveGenerator::generateMoves(const Board &bd)
 
 				}while(!bd.isOffBoard(capture_sq) && Ranged[piece]);
 				// Unranged loop once
-			} // Move direction loop 
+			} // Move direction loop
 		} // Piece list loop
 	}// Piece type loop
 	removeIllegalMoves(bd);
@@ -365,7 +374,7 @@ void MoveGenerator::removeIllegalMoves(const Board &bd)
 void MoveGenerator::addCastleMoves(const Board &bd)
 {
 	// It's ok if the king ends up in check.
-	// Another function will remove these moves. 
+	// Another function will remove these moves.
 
 	// If no castle permissions return
 	if (!(bd.Castle[0] || bd.Castle[1] || bd.Castle[2] || bd.Castle[3]))
@@ -415,7 +424,7 @@ void MoveGenerator::addCastleMoves(const Board &bd)
 	if(bd.Castle[king_side] &&
 	   !bd.isSquareAttacked(king_side_passage, opposite_color) &&
 	   !bd.isOccupiedSquare(king_side_passage) &&
-	   !bd.isOccupiedSquare(king_final_kside) 
+	   !bd.isOccupiedSquare(king_final_kside)
 	   	)
 	{
 		int castle_side = bd.ActiveColor == WHITE ?
@@ -511,17 +520,17 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 		// Get the square attacked and the piece placed there
 		Square sq_capture = sq;
 		sq_capture.moveSquare((int *)AttackDir[piece][dir_idx]);
-		if(sq_capture.isOffBoard()) 
+		if(sq_capture.isOffBoard())
 			continue;
 		int piece_capture = bd.getSquareValue(sq_capture);
-		
+
 		// If there's something of opponents color on there, add capture
 		if (piece_capture != NO_PIECE && PieceSide[piece_capture] != bd.ActiveColor)
 		{
 			if(!isPromotion(piece, sq_capture))
 				MoveList.push_back(Move(sq, sq_capture, piece, piece_capture));
 			else
-				addPromotionMoves(sq, sq_capture, piece, piece_capture); 
+				addPromotionMoves(sq, sq_capture, piece, piece_capture);
 		}
 
 		// Add Enp move
@@ -534,14 +543,14 @@ void MoveGenerator::addPawnMoves(const Board &bd, const Square &sq, const int &p
 
 void MoveGenerator::test_addPawnMoves(Board &bd)
 {
-	
+
 	bd.setBoardFromFEN(STARTFEN);
 	bd.printBoard();
 	print_separator();
 	cout << "Genrate pawn moves on E file" << endl;
 	addPawnMoves(bd, Square(RANK2, FILEE)  ,wP);
 	printAllMovesGenerated(bd);
-	
+
 	// Promotion test
 	bd.resetBoard();
 	bd.setBoardFromFEN("K3B1n1/1Pp2P2/8/8/8/8/3p4/k7 w - - 0 1 ");
@@ -550,7 +559,7 @@ void MoveGenerator::test_addPawnMoves(Board &bd)
 	cout << "Promotion move generation testing" << endl;
 	addPawnMoves(bd, Square(RANK7, FILEF)  ,wP);
 	printAllMovesGenerated(bd);
-	
+
 	// Enp test
 	bd.resetBoard();
 	bd.setBoardFromFEN("k7/4ppp1/8/8/5Pp1/8/1PPPP3/K7 b - f3 0 1 ");

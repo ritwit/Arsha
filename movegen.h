@@ -74,6 +74,7 @@ public:
     Move(): Move(OFFSQ, OFFSQ, NO_PIECE){}
     void applyMove(Board &bd) const;
     void printMove() const;
+    std::string getString() const;
 
     // Test code
     void test_applyMove(Board &bd);
