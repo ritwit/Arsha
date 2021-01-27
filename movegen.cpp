@@ -230,11 +230,16 @@ void Move::printMove() const
 
 string Move::getString() const
 {
+	if (Castle != NOCASTLE)
+	{
+		return castleside2string[Castle];
+	}
 	string from_str = From.getString();
 	string to_str = To.getString();
-	string promotion = "";
-	return from_str + to_str + promotion;
-
+	string promotion_str = "";
+	if (Promotion != NO_PIECE)
+		promotion_str = val2char[Promotion];
+	return from_str + to_str + promotion_str;
 }
 
 

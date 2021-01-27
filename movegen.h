@@ -1,6 +1,8 @@
 #ifndef __MOVEGEN_H__
 #define __MOVEGEN_H__
 
+#include <string>
+
 #include "global.h"
 
 enum CastleSide
@@ -8,6 +10,7 @@ enum CastleSide
 	NOCASTLE, BKINGSIDE, BQUEENSIDE, WKINGSIDE, WQUEENSIDE
 };
 
+const std::string castleside2string[5] = {" ", "e8g8", "e8c8", "e1g1", "e1c1"};
 
 enum PawnJump
 {

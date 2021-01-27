@@ -35,7 +35,7 @@ Board::Board(const Board &bd)
 
 void Board::printBoard() const
 {
-	cout << "Printing Chess Board..." << endl << endl;
+	cout << endl;
 	cout <<"      ";
 
 	for(int f = FILEA; f <= FILEH; f++)
@@ -47,7 +47,7 @@ void Board::printBoard() const
 	cout << endl << endl;
 	for(int r = RANK8; r >= RANK1; r--)
 	{
-		cout << "RANK " << r+1 <<"\t";
+		cout << "RANK " << r + 1 <<"\t";
 		for(int f = FILEA; f <= FILEH; f++)
 			cout << val2char[Brd[r][f]] << "    ";
 		cout << endl << endl;
@@ -57,12 +57,12 @@ void Board::printBoard() const
 		 << string(ActiveColor == WHITE ? "WHITE" : "BLACK")
 		 << endl;
 
-	cout << "Total Moves: " << NMoves << endl;
-	cout << "Half Moves: "  << HalfMoves << endl;
-	cout << "En Passant Square: " << endl;
-	EnP.printSquare();
-	
-	cout << "Castle Permissions: " 
+	//cout << "Total Moves: " << NMoves << endl;
+	//cout << "Half Moves: "  << HalfMoves << endl;
+	//cout << "En Passant Square: " << endl;
+	//EnP.printSquare();
+
+	cout << "Castle Permissions: "
 	     << "wK:" << Castle[0] << ", "
 	     << "wQ:" << Castle[1] << ", "
 	     << "bK:" << Castle[2] << ", "
@@ -80,11 +80,16 @@ void Board::setBoardFromFEN(string fen)
 
 	// Different parts of the FEN format
 	int section = 0;
+	// Remove leading spaces
+	bool leading = true;
 
 	for (auto c = fen.begin(); c != fen.end(); c++)
 	{
 		if(*c == ' ')
 		{
+			if(leading && section == 0)
+				continue;
+
 			section++;
 			continue;
 		}
@@ -166,11 +171,12 @@ void Board::setBoardFromFEN(string fen)
 					Brd[rank][file] = NO_PIECE;
 					file++;
 				}
+				leading = false;
 		}//end switch
 
 
 		else if (section == 1)
-		{	
+		{
 			if (*c == 'w')
 				ActiveColor = WHITE;
 			if (*c == 'b')
@@ -209,7 +215,7 @@ void Board::setBoardFromFEN(string fen)
 				EnP = OFFSQ;
 				continue;
 			}
-			
+
 			if (!enp_file)
 			{
 				enp_file = *c;
@@ -245,7 +251,7 @@ void Board::setPlistFromBrd()
 			int piece = getSquareValue(sq);
 
 			if(piece)
-				Plist[piece].push_back(sq);		
+				Plist[piece].push_back(sq);
 		}
 }
 
@@ -290,13 +296,13 @@ bool Board::checkBoardConsistency() const
 
 			if(!flag && piece)
 			{
-				cout << "Board inconsistent" << val2char[piece] 
+				cout << "Board inconsistent" << val2char[piece]
 					 << " not in Piecelist" << r << "," << f << endl;
-				return false; 
+				return false;
 			}
 		}
 	// Everything alright
-	return true;	
+	return true;
 }
 
 void Board::setBoardFromFEN_test()
@@ -320,7 +326,7 @@ void Board::setBoardFromFEN_test()
 	setBoardFromFEN(TESTFEN3);
 	printBoard();
 	checkBoardConsistency();
-	resetBoard(); 
+	resetBoard();
 }
 
 
@@ -339,7 +345,7 @@ bool Board::isSquareAttacked(const Square &sq, const Color &side) const
 			do
 			{
 				sqp.moveSquareOpposite((int *)AttackDir[piece][dir_idx]);
-				
+
 				if (isOffBoard(sqp))
 					break;
 
@@ -352,7 +358,7 @@ bool Board::isSquareAttacked(const Square &sq, const Color &side) const
 			}while(!isOffBoard(sqp) && Ranged[piece]);
 				// Non-ranged piece run this once
 				// Ranged piece run until square is offboard
-		}// end of attack direction for loop	
+		}// end of attack direction for loop
 	}//end of piece loop
 	return false;
 }
@@ -382,7 +388,7 @@ bool Board::isOffBoard(const Square &sq) const
 {
 	if (sq.Pos[0] < 0 || sq.Pos[0] > 7 || sq.Pos[1]  < 0 || sq.Pos[1] > 7)
 		return true;
-	return false; 
+	return false;
 }
 
 
@@ -390,7 +396,7 @@ void Board::isSquareAttacked_test()
 {
 	const string testFEN[] =
 	{
-		"8/1N6/8/8/4n3/8/8/8 w - - 0 1 ",		
+		"8/1N6/8/8/4n3/8/8/8 w - - 0 1 ",
 		"8/3p4/4pp2/8/8/2PP4/4PP2/8 w - - 0 1 ",
 		"8/2K5/8/8/8/5k2/8/8 w - - 0 1 ",
 		"8/2B2B2/8/8/3P2P1/4b3/4b3/8 w - - 0 1 ",
