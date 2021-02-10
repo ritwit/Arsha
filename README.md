@@ -1,11 +1,12 @@
 # Arsha
 Rithwik's Chess Engine in C++.
+
 Email: rtom (AT) andrew.cmu.edu
 
 ## Installation
 You need:
 
-1. a Unix(-like) machine to install Arsha.
+1. a Unix(-like) machine.
 
 2. A C++ compiler which supports C++11 standard.
 
@@ -30,7 +31,7 @@ Arsha plays white. She will make the first move.
 You need to type in move commands.
 
 For example, if want to move
-the black pawn from E7E5, you need to enter:
+the black pawn from E7 Square to E5 Square, you need to enter:
 
 `move e7e5`
 
