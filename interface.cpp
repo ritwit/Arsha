@@ -1,10 +1,12 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <tuple>
 
 #include "interface.h"
 #include "debug.h"
 #include "movegen.h"
+#include "search.h"
 
 using std::cout;
 using std::cin;
@@ -19,7 +21,7 @@ Board Interface::bd_state;
 
 bool Interface::inputLoop()
 {
-    cout << "arsha > ";
+    cout << "Arsha >>> ";
     for(string line; std::getline(cin, line); )
     {
         string command = line;
@@ -36,13 +38,32 @@ bool Interface::inputLoop()
 
         status = parseLine(command);
         if(status)
+        {
             bd_state.printBoard();
+            print_separator();
+            cout << "Arsha is thinking..." << endl;
+            ArshaMove();
+            print_separator();
+            bd_state.printBoard();
+        }
 
-        print_separator();
-        cout << "arsha > ";
+        print_double_separator();
+        cout << "Arsha >>> ";
     }
 
     return false;
+}
+
+bool Interface::ArshaMove()
+{
+    Move best_move;
+    int score;
+    const int depth = 5;
+    Negamax search;
+    std::tie(best_move, score) = search.findBestMove(bd_state, depth);
+    best_move.applyMove(bd_state);
+    cout << "Arsha moves: " << best_move.getString() << endl;
+    return true;
 }
 
 bool Interface::parseLine(const string &line)

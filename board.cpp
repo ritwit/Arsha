@@ -62,12 +62,14 @@ void Board::printBoard() const
 	//cout << "En Passant Square: " << endl;
 	//EnP.printSquare();
 
+	/*
 	cout << "Castle Permissions: "
 	     << "wK:" << Castle[0] << ", "
 	     << "wQ:" << Castle[1] << ", "
 	     << "bK:" << Castle[2] << ", "
 	     << "bQ:" << Castle[3] << endl;
 
+	*/
 }
 
 void Board::setBoardFromFEN(string fen)

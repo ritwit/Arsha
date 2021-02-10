@@ -16,6 +16,7 @@ public:
     static bool parseLine(const std::string &line);
     static bool parseMove(const std::string &move);
     static void setBoard(const std::string &fen);
+    static bool ArshaMove();
 };
 
 #endif // interface.h
