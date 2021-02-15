@@ -38,6 +38,11 @@ the black pawn from E7 Square to E5 Square, you need to enter:
 
 `move e7e5`
 
+Castle moves are represented by movement of the King. For example,
+if you want to perform black kingside/short castle, enter:
+
+`move e8g8`
+
 A list of all possible moves can be found by:
 
 `move list`

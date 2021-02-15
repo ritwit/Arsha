@@ -10,7 +10,7 @@ enum CastleSide
 	NOCASTLE, BKINGSIDE, BQUEENSIDE, WKINGSIDE, WQUEENSIDE
 };
 
-const std::string castleside2string[5] = {" ", "e8g8", "e8c8", "e1g1", "e1c1"};
+const std::string castleside2string[5] = {" ", "E8G8", "E8C8", "E1G1", "E1C1"};
 
 enum PawnJump
 {
