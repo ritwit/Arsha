@@ -25,7 +25,7 @@ bool Interface::inputLoop()
     for(string line; std::getline(cin, line); )
     {
         string command = line;
-        bool status = true;
+        int status = SUCCESS;
 
         if(line == "exit")
             return status;
@@ -37,7 +37,8 @@ bool Interface::inputLoop()
         }
 
         status = parseLine(command);
-        if(status)
+
+        if(status == SUCCESS)
         {
             bd_state.printBoard();
             print_separator();
@@ -66,10 +67,10 @@ bool Interface::ArshaMove()
     return true;
 }
 
-bool Interface::parseLine(const string &line)
+int Interface::parseLine(const string &line)
 {
     //cout << "Parsing line: " << line << endl;
-    bool success = true;
+    int state = SUCCESS;
 
     auto space = line.find(' ');
     if (space == string::npos)
@@ -81,7 +82,8 @@ bool Interface::parseLine(const string &line)
     string command = line.substr(0, space);
     if(command == move_str)
     {
-        success = parseMove(line.substr(space + 1, string::npos));
+        state = parseMove(line.substr(space + 1, string::npos));
+
     }
     else if(command == fen_str)
     {
@@ -90,10 +92,9 @@ bool Interface::parseLine(const string &line)
     else
     {
         cout << "Unable to parse instruction: " << command << endl;
-        success = false;
+        state = FAIL;
     }
-
-    return success;
+    return state;
 }
 
 void Interface::setBoard(const string &fen)
@@ -101,7 +102,7 @@ void Interface::setBoard(const string &fen)
     bd_state.setBoardFromFEN(fen);
 }
 
-bool Interface::parseMove(const string &move)
+int Interface::parseMove(const string &move)
 {
     string input_move = move;
     // make upercase
@@ -116,15 +117,24 @@ bool Interface::parseMove(const string &move)
     //cout << "Parsing move" << input_move << endl;
     MoveGenerator mvgen;
     mvgen.generateMoves(bd_state);
-    for (Move &mv: mvgen.MoveList)
+
+    // List all moves
+    if(input_move == "LIST")
+    {
+        for(Move &mv: mvgen.MoveList)
+            cout << mv.getString() << endl;
+        return SKIP;
+    }
+
+    for(Move &mv: mvgen.MoveList)
     {
         //cout << mv.getString() << endl;
-        if (input_move == mv.getString())
+        if(input_move == mv.getString())
         {
             mv.applyMove(bd_state);
-            return true;
+            return SUCCESS;
         }
     }
     cout << "Unable to make move: "<< input_move << endl;
-    return false;
+    return FAIL;
 }

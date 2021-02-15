@@ -4,9 +4,9 @@ Rithwik's Chess Engine in C++.
 Email: rtom (AT) andrew.cmu.edu
 
 ## Installation
-You need:
+You'll need:
 
-1. a Unix(-like) machine.
+1. A Unix(-like) machine.
 
 2. A C++ compiler which supports C++11 standard.
 
@@ -28,12 +28,19 @@ To start a game enter:
 `start`
 
 Arsha plays white. She will make the first move.
-You need to type in move commands.
+You need to type in move commands. Moves are entered in an
+algebraic chess notation. Squares are uniquely identified using
+a system of coordinates. The rows/ranks are labelled from 1-8
+and columns/files are labelled from A-H.
 
 For example, if want to move
 the black pawn from E7 Square to E5 Square, you need to enter:
 
 `move e7e5`
+
+A list of all possible moves can be found by:
+
+`move list`
 
 ## Bugs
 Please report bugs if you find any. Use the 'issues' tab on GitHub.

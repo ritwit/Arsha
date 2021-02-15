@@ -3,6 +3,13 @@
 
 #include "board.h"
 
+enum Return_state
+{
+    FAIL,
+    SUCCESS,
+    SKIP
+};
+
 class Interface
 {
 private:
@@ -13,8 +20,8 @@ private:
 
 public:
     static bool inputLoop();
-    static bool parseLine(const std::string &line);
-    static bool parseMove(const std::string &move);
+    static int parseLine(const std::string &line);
+    static int parseMove(const std::string &move);
     static void setBoard(const std::string &fen);
     static bool ArshaMove();
 };
