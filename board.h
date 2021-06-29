@@ -11,7 +11,7 @@ class Board
 public:
 	
 	//standard 8x8 board
-	short Brd[NRANKS][NFILES] = {0};
+	short Brd[NRANKS][NFILES] = {{0}};
 
 	//Piece lists
 	std::vector<Square> Plist[NPIECES];
